@@ -1,0 +1,7 @@
+This branch contains port versions which are meant for testing.
+Only ports that are known to be working at least to some extent
+should be copied from master into this branch.
+When a port has been tested for some time without any problems,
+it can then be copied over into the stable branch of the same 
+architecture.
+
