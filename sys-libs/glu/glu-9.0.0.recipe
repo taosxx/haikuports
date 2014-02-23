@@ -1,0 +1,63 @@
+SUMMARY="OpenGL Utility Library"
+DESCRIPTION="
+OpenGL Utility Library.
+"
+HOMEPAGE="http://freedesktop.org"
+COPYRIGHT="Copyright (C) 1999-2012 Brian Paul and others.  All Rights Reserved."
+LICENSE="MIT"
+SRC_URI="ftp://freedesktop.org/pub/mesa/glu/glu-9.0.0.tar.gz"
+CHECKSUM_MD5="bbc57d4fe3bd3fb095bdbef6fcb977c4"
+REVISION="3"
+ARCHITECTURES="x86_gcc2 x86 x86_64"
+SECONDARY_ARCHITECTURES="x86_gcc2 x86"
+
+PROVIDES="
+	glu$secondaryArchSuffix = $portVersion
+	lib:libGLU$secondaryArchSuffix = 1.3.1 compat >= 1
+	"
+REQUIRES="
+	haiku$secondaryArchSuffix >= $haikuVersion
+	lib:libGL${secondaryArchSuffix}
+	"
+BUILD_REQUIRES="
+	haiku${secondaryArchSuffix}_devel >= $haikuVersion
+	devel:libGL$secondaryArchSuffix
+	"
+BUILD_PREREQUIRES="
+	cmd:gcc$secondaryArchSuffix
+	cmd:ld$secondaryArchSuffix
+	cmd:make
+	cmd:sed
+	"
+
+BUILD()
+{
+	runConfigure ./configure
+	make $jobArgs
+}
+
+INSTALL()
+{
+	make install
+
+	prepareInstalledDevelLibs libGLU
+	fixPkgconfig
+
+	# Remove the additional LDFLAGS from libGLU.la
+	sed -i "s,^dependency_libs=.*,dependency_libs=' -lGL'," \
+		$developLibDir/libGLU.la
+
+	# devel package
+	packageEntries devel \
+		$developDir
+}
+
+# ----- devel package -------------------------------------------------------
+
+PROVIDES_devel="
+	glu${secondaryArchSuffix}_devel = $portVersion
+	devel:libGLU$secondaryArchSuffix = 1.3.1 compat >= 1
+	"
+REQUIRES_devel="
+	glu$secondaryArchSuffix == $portVersion base
+	"
