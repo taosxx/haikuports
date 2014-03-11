@@ -10,7 +10,7 @@ LICENSE="
 COPYRIGHT="1988-2013 Free Software Foundation, Inc."
 SRC_URI="
 	git+file://$portBaseDir/../binutils/download/buildtools.git#66becd8fe7e99054b190c181b063933310718179
-	git+git://github.com/haiku/buildtools.git#66becd8fe7e99054b190c181b063933310718179
+	git+https://github.com/haiku/buildtools.git#66becd8fe7e99054b190c181b063933310718179
 	"
 REVISION="2"
 ARCHITECTURES="x86 x86_64"
