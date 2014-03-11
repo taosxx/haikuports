@@ -32,8 +32,8 @@ REQUIRES="
 	"
 
 BUILD_REQUIRES="
-	devel:libpcre >= 1
-	devel:libpcreposix >= 1
+	devel:libpcre
+	devel:libpcreposix
 	"
 
 BUILD_PREREQUIRES="
