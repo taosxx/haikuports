@@ -35,7 +35,7 @@ BUILD_PREREQUIRES="
 	cmd:automake
 	cmd:gcc$secondaryArchSuffix
 	cmd:ld$secondaryArchSuffix
-	cmd:libtool >= 2.4.2
+	cmd:libtool
 	cmd:make
 	cmd:which
 	"
