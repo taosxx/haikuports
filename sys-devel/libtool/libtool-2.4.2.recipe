@@ -6,14 +6,14 @@ DESCRIPTION="
 HOMEPAGE="http://www.gnu.org/software/libtool"
 COPYRIGHT="2004-2010 Free Software Foundation, Inc."
 LICENSE="GNU GPL v2"
-SRC_URI="ftp://ftp.gnu.org/gnu/libtool/libtool-2.4.tar.gz"
-CHECKSUM_MD5="b32b04148ecdd7344abc6fe8bd1bb021"
-REVISION="8"
+SRC_URI="ftp://ftp.gnu.org/gnu/libtool/libtool-2.4.2.tar.gz"
+CHECKSUM_MD5="d2f3b7d4627e69e13514a40e72a24d50"
+REVISION="1"
 ARCHITECTURES="x86_gcc2 x86 x86_64"
 
 PATCHES="
-	2.4/adjust_config_for_packaging.patch
-	2.4/remove_help2man_dependency.patch
+	2.4.2/adjust_config_for_packaging.patch
+	2.4.2/remove_help2man_dependency.patch
 	"
 
 PROVIDES="
@@ -34,15 +34,18 @@ BUILD_REQUIRES="
 	"
 BUILD_PREREQUIRES="
 	haiku_devel >= $haikuVersion
+	cmd:find
 	cmd:aclocal
 	cmd:autoconf >= 2.62
 	cmd:autoheader >= 2.62
+	cmd:find
 	cmd:gcc
 	cmd:ld
 	cmd:make
 	cmd:nm
 	cmd:ranlib
 	cmd:sed
+	cmd:xargs
 	"
 
 

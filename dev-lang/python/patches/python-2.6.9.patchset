@@ -850,3 +850,28 @@ index 930a368..41a16a2 100644
 -- 
 1.8.3.4
 
+From 65db0c5cdfce63260e3b0f7f171a51273e18a40d Mon Sep 17 00:00:00 2001
+From: Alexander von Gluck IV <kallisti5@unixzen.com>
+Date: Wed, 22 Jan 2014 00:08:14 +0000
+Subject: [PATCH] haiku: Fix home non-packaged dir
+
+---
+ Lib/site.py | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/Lib/site.py b/Lib/site.py
+index 304f994..74b0785 100644
+--- a/Lib/site.py
++++ b/Lib/site.py
+@@ -242,7 +242,7 @@ def addusersitepackages(known_paths):
+                                  "Python" + sys.version[0] + sys.version[2],
+                                  "site-packages")
+     elif sys.platform.startswith('haiku'):
+-        USER_BASE = env_base if env_base else joinuser("~", "non-packaged")
++        USER_BASE = env_base if env_base else joinuser("~", "config", "non-packaged")
+         USER_SITE = os.path.join(USER_BASE, "lib",
+                                  "python" + sys.version[:3],
+                                  "site-packages")
+-- 
+1.8.3.4
+

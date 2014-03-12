@@ -1,17 +1,14 @@
-Remove dependency to help2man, which tries to regenerate the manpages.
-As the failure to use help2man has become an error with automake-1.13,
-we just use the manpages that come with the source.
-
-diff -ruwN libtool-2.4/Makefile.am libtool-2.4_haiku/Makefile.am
---- libtool-2.4/Makefile.am	2010-09-21 09:07:22.038535168 +0200
-+++ libtool-2.4_haiku/Makefile.am	2013-04-23 23:41:18.886833152 +0200
-@@ -322,16 +322,6 @@
+diff --git a/Makefile.am b/Makefile.am
+index 268b399..a8236c1 100644
+--- a/Makefile.am
++++ b/Makefile.am
+@@ -328,16 +328,6 @@ $(srcdir)/doc/notes.txt: $(srcdir)/doc/notes.texi
  	  $(MAKEINFO) --no-headers $(MAKEINFOFLAGS) -o notes.txt notes.texi
  
  dist_man1_MANS		= $(srcdir)/doc/libtool.1 $(srcdir)/doc/libtoolize.1
 -MAINTAINERCLEANFILES	+= $(dist_man1_MANS)
 -update_mans = \
--  PATH=.$(PATH_SEPARATOR)$$PATH; export PATH; \
+-  PATH=".$(PATH_SEPARATOR)$$PATH"; export PATH; \
 -  $(HELP2MAN) --output=$@
 -$(srcdir)/doc/libtool.1: $(srcdir)/$(auxdir)/ltmain.sh
 -	$(update_mans) --help-option=--help-all libtool

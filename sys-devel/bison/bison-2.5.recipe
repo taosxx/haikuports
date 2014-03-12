@@ -10,28 +10,32 @@ to work with Bison with no change. Anyone familiar with Yacc should be able to \
 use Bison with little trouble. You need to be fluent in C or C++ programming \
 in order to use Bison.
 "
-HOMEPAGE="http://www.gnu.org/software/bison/bison.html"
-COPYRIGHT="1992-2010 Free Software Foundation, Inc."
+HOMEPAGE="http://www.gnu.org/software/bison/bison.html" 
+COPYRIGHT="1992-2011 Free Software Foundation, Inc."
 LICENSE="GNU GPL v3"
-SRC_URI="http://ftp.gnu.org/gnu/bison/bison-2.4.3.tar.gz"
-CHECKSUM_MD5="ea45c778b36bdc7a720096819e292a73"
-REVISION="6"
-ARCHITECTURES="x86_gcc2 x86 x86_64"
+SRC_URI="http://ftp.gnu.org/gnu/bison/bison-2.5.tar.gz"
+CHECKSUM_MD5="687e1dcd29452789d34eaeea4c25abe4"
+REVISION="1"
 
-PATCHES="bison-2.4.3.patch"
+ARCHITECTURES="?x86 x86_64"
+
+PATCHES="bison-${portVersion}.patch"
 
 PROVIDES="
-	bison = $portVersion compat >= 2.4
-	cmd:bison = $portVersion compat >= 2.4
+	bison = $portVersion compat >= 2.5
+	cmd:bison = $portVersion compat >= 2.5
 	cmd:yacc
-	devel:liby = $portVersion compat >= 2.4
+	devel:liby = $portVersion compat >= 2.5
 	"
+
 REQUIRES="
 	haiku >= $haikuVersion
 	cmd:m4
 	"
+
 BUILD_REQUIRES="
 	"
+
 BUILD_PREREQUIRES="
 	haiku_devel >= $haikuVersion
 	cmd:gcc
@@ -41,13 +45,9 @@ BUILD_PREREQUIRES="
 	cmd:sed
 	"
 
-
 BUILD()
 {
-	# bison looks for m4 in an absolute path, but uses that only within
-	# its own testsuite, so we let it be ...
-	M4=$portPackageLinksDir/cmd~m4/bin/m4 runConfigure ./configure \
-		--disable-rpath --with-gnu-ld
+	runConfigure ./configure
 	make $jobArgs
 }
 
@@ -55,7 +55,6 @@ INSTALL()
 {
 	make install
 
-	# prepare develop/lib
 	prepareInstalledDevelLibs liby
 
 	rm $libDir/charset.alias
