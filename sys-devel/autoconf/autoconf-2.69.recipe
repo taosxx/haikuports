@@ -45,6 +45,7 @@ BUILD_PREREQUIRES="
 	cmd:autoreconf >= 2.60
 	cmd:make
 	cmd:makeinfo
+	cmd:perl >= 5
 	cmd:sed
 	"
 
