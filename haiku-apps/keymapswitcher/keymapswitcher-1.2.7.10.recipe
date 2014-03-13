@@ -18,6 +18,7 @@ REQUIRES="
 	haiku >= $haikuVersion
 	"
 BUILD_REQUIRES="
+	makefile_engine
 	"
 BUILD_PREREQUIRES="
 	haiku_devel >= $haikuVersion
@@ -37,7 +38,7 @@ PATCH()
 
 BUILD()
 {
-	make $jobArgs BUILDHOME=/boot/common/develop HPKG_INSTALL_DIR=$prefix
+	make $jobArgs BUILDHOME=/boot/system/develop HPKG_INSTALL_DIR=$prefix
 }
 
 INSTALL()
@@ -46,7 +47,7 @@ INSTALL()
 	# interesting files to a well-known directory structure. Otherwise we'd have
 	# to find out the name of the object dir and collect everything ourselves.
 	# Obviously an install target would be even better.
-	make BUILDHOME=/boot/common/develop HPKG_INSTALL_DIR=$prefix hpkg
+	make BUILDHOME=/boot/system/develop HPKG_INSTALL_DIR=$prefix hpkg
 
 	# move misplaced KeymapSwitcher
 	mkdir $preferencesDir
