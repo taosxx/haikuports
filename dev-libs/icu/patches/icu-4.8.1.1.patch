@@ -207,7 +207,7 @@ diff -ruN icu/source/config/mh-haiku icu-haiku/source/config/mh-haiku
  THREADSCPPFLAGS =
  
 +#
-+CPPFLAGS += -D__STDC_ISO_10646__ -DU_CHARSET_IS_UTF8=1
++CPPFLAGS += -DU_CHARSET_IS_UTF8=1
 +
  ## Compiler switch to embed a runtime search path
  LD_RPATH=
