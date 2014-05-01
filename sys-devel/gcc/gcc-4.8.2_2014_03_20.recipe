@@ -3,17 +3,20 @@ DESCRIPTION="
 Standard compiler for x86 platform.
 "
 HOMEPAGE="http://gcc.gnu.org"
+
+srcGitRev="c20a732df8f8b6d0f32c872817f3a0498a5c4761"
+SRC_URI="https://github.com/haiku/buildtools/archive/$srcGitRev.tar.gz"
+CHECKSUM_SHA256="6d3b677cd8ef777bf6fb3186a15b5122e46345595a996370325c758b3d8a4ab6"
+SRC_FILENAME="$portVersionedName.tar.gz"
+REVISION="1"
 LICENSE="
 	GNU GPL v2
 	GNU LGPL v2
 	"
 COPYRIGHT="1988-2013 Free Software Foundation, Inc."
-SRC_URI="
-	git+file://$portBaseDir/../binutils/download/buildtools.git#66becd8fe7e99054b190c181b063933310718179
-	git+https://github.com/haiku/buildtools.git#66becd8fe7e99054b190c181b063933310718179
-	"
-REVISION="2"
-ARCHITECTURES="x86 x86_64"
+
+
+ARCHITECTURES="x86 x86_64 arm"
 if [ $effectiveTargetArchitecture != x86_gcc2 ]; then
 	# x86_gcc2 is fine as primary target architecture as long as we're building
 	# for a different secondary architecture.
@@ -30,6 +33,7 @@ PROVIDES="
 	cmd:gcc$secondaryArchSuffix = $portVersion compat >= 4
 	cmd:gcc_4.8.2$secondaryArchSuffix = $portVersion compat >= 4
 	cmd:gcov$secondaryArchSuffix = $portVersion compat >= 4
+	lib:libstdc++$secondaryArchSuffix = $portVersion compat >= 4
 	"
 
 REQUIRES="
@@ -54,7 +58,7 @@ BUILD_PREREQUIRES="
 	cmd:xargs
 	"
 
-SOURCE_DIR="gcc-$portVersion/gcc"
+SOURCE_DIR="buildtools-$srcGitRev/gcc"
 
 sourceDir=$(pwd)
 relativeInstallDir="develop/tools$secondaryArchSubDir"
