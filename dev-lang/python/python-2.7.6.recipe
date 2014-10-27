@@ -11,38 +11,41 @@ OSI-approved open source license.
 HOMEPAGE="http://www.python.org"
 LICENSE="Python"
 COPYRIGHT="1990-2012, Python Software Foundation"
-SRC_URI="http://www.python.org/ftp/python/2.6.9/Python-2.6.9.tar.xz"
-CHECKSUM_SHA256="cae7bb995006ea5b703d9d28446f694894c441fe4bfb95d561c0ac908cd06e41"
-REVISION="1"
-ARCHITECTURES="x86_gcc2 x86 x86_64"
+SRC_URI="https://www.python.org/ftp/python/2.7.6/Python-2.7.6.tar.xz"
+CHECKSUM_SHA256="1fd68e81f8bf7386ff239b7faee9ba387129d2cf34eab13350bd8503a0bff6a1"
+REVISION="4"
+ARCHITECTURES="x86_gcc2 !x86 x86_64"
 
-PATCHES="python-2.6.9.patchset"
+PATCHES="python-2.7.6.patchset"
 
 PROVIDES="
-	python = $portVersion compat >= 2.6
-	cmd:2to3 = $portVersion compat >= 2.6
-	cmd:idle = $portVersion compat >= 2.6
-	cmd:pydoc = $portVersion compat >= 2.6
-	cmd:python = $portVersion compat >= 2.6
-	cmd:python2.6 = $portVersion compat >= 2.6
-	cmd:python2.6_config = $portVersion compat >= 2.6
-	cmd:python_config = $portVersion compat >= 2.6
-	cmd:smtpd.py = $portVersion compat >= 2.6
-	devel:libpython2.6 = 1.0
-	lib:libpython2.6 = 1.0
+	python = $portVersion compat >= 2.7
+	cmd:2to3 = $portVersion compat >= 2.7
+	cmd:idle = $portVersion compat >= 2.7
+	cmd:pydoc = $portVersion compat >= 2.7
+	cmd:python = $portVersion compat >= 2.7
+	cmd:python2 = $portVersion compat >= 2.7
+	cmd:python2_config = $portVersion compat >= 2.7
+	cmd:python2.7 = $portVersion compat >= 2.7
+	cmd:python2.7_config = $portVersion compat >= 2.7
+	cmd:python_config = $portVersion compat >= 2.7
+	cmd:smtpd.py = $portVersion compat >= 2.7
+	devel:libpython2.7 = 1.0
+	lib:libpython2.7 = 1.0
 	"
 REQUIRES="
 	haiku >= $haikuVersion
-	cmd:nano
 	lib:libbz2
 	lib:libncurses
 	lib:libssl
 	lib:libreadline
 	lib:libsqlite3
 	lib:libz
+	lib:libffi
 	"
 BUILD_REQUIRES="
 	devel:libbz2
+	devel:libffi
 	devel:libncurses
 	devel:libssl
 	devel:libreadline
@@ -58,20 +61,14 @@ BUILD_PREREQUIRES="
 	cmd:ld
 	cmd:libtoolize
 	cmd:make
-	cmd:nano
+	cmd:pkg_config
 	"
 
-SOURCE_DIR="Python-2.6.9"
+SOURCE_DIR="Python-2.7.6"
 
 GLOBAL_WRITABLE_FILES="
-	non-packaged/lib/python2.6/site-packages directory keep-old
+	non-packaged/lib/python2.7/site-packages directory keep-old
 	"
-
-PATCH()
-{
-	echo "AC_CONFIG_MACRO_DIR([m4])" >> configure.in
-	find . -name '*.py' -exec sed -i -e 's|/usr/bin/env|/bin/env|g' {} \;
-}
 
 BUILD()
 {
@@ -82,7 +79,7 @@ BUILD()
 	libtoolize --force --copy --install
 	aclocal
 	autoconf
-	runConfigure ./configure \
+	runConfigure ./configure --with-system-ffi \
 		--enable-shared \
 		--enable-unicode=ucs4
 
@@ -96,14 +93,14 @@ INSTALL()
 {
 	make install
 
-	prepareInstalledDevelLibs libpython2.6
+	prepareInstalledDevelLibs libpython2.7
 	
-	mkdir -p $prefix/lib/python2.6/vendor-packages
+	mkdir -p $prefix/lib/python2.7/vendor-packages
 	echo 'This directory contains packaged python modules.' \
-		>$prefix/lib/python2.6/vendor-packages/README
+		>$prefix/lib/python2.7/vendor-packages/README
 
-	mkdir -p $prefix/non-packaged/lib/python2.6
-	mv $prefix/lib/python2.6/site-packages $prefix/non-packaged/lib/python2.6/
+	mkdir -p $prefix/non-packaged/lib/python2.7
+	mv $prefix/lib/python2.7/site-packages $prefix/non-packaged/lib/python2.7/
 }
 
 TEST()
