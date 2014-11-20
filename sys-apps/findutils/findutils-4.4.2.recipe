@@ -30,8 +30,10 @@ REQUIRES="
 BUILD_PREREQUIRES="
 	haiku_devel >= $haikuVersion
 	cmd:gcc
+	cmd:grep
 	cmd:ld
 	cmd:make
+	cmd:sed
 	"
 
 defineDebugInfoPackage findutils \

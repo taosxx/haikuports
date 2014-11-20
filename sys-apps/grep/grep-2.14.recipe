@@ -38,6 +38,7 @@ BUILD_PREREQUIRES="
 	cmd:automake
 	cmd:gcc
 	cmd:gettext
+	cmd:grep
 	cmd:ld
 	cmd:libtoolize
 	cmd:make

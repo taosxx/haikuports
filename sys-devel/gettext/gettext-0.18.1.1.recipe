@@ -105,6 +105,7 @@ BUILD_PREREQUIRES="
 	cmd:automake
 	cmd:find
 	cmd:gcc$secondaryArchSuffix
+	cmd:grep
 	cmd:ld$secondaryArchSuffix
 	cmd:libtoolize
 	cmd:make

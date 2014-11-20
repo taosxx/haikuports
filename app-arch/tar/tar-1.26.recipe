@@ -34,6 +34,7 @@ BUILD_PREREQUIRES="
 	cmd:automake
 	cmd:autoreconf
 	cmd:gcc
+	cmd:grep
 	cmd:ld
 	cmd:make
 	cmd:sed

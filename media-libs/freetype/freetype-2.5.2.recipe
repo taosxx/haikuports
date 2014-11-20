@@ -34,6 +34,7 @@ BUILD_PREREQUIRES="
 	cmd:autoconf
 	cmd:automake
 	cmd:gcc$secondaryArchSuffix
+	cmd:grep
 	cmd:ld$secondaryArchSuffix
 	cmd:libtool
 	cmd:make

@@ -55,6 +55,7 @@ BUILD_REQUIRES="
 BUILD_PREREQUIRES="
 	haiku${secondaryArchSuffix}_devel >= $haikuVersion
 	cmd:gcc${secondaryArchSuffix}
+	cmd:grep
 	cmd:ld${secondaryArchSuffix}
 	cmd:make
 	cmd:perl >= 5

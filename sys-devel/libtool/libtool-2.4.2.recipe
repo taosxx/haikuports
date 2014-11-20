@@ -39,6 +39,7 @@ BUILD_PREREQUIRES="
 	cmd:autoheader >= 2.62
 	cmd:find
 	cmd:gcc
+	cmd:grep
 	cmd:ld
 	cmd:make
 	cmd:nm

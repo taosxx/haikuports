@@ -2,7 +2,7 @@ SUMMARY="Utility to apply diffs to files"
 DESCRIPTION="
 Patch takes a patch file containing a difference listing produced by the diff \
 program and applies those differences to one or more original files, producing \
-patched versions. 
+patched versions.
 "
 LICENSE="GNU GPL v3"
 COPYRIGHT="2012 Free Software Foundation, Inc."
@@ -26,7 +26,9 @@ BUILD_PREREQUIRES="
 	cmd:awk
 	cmd:make
 	cmd:gcc
-	cmd:git
+	cmd:grep
+	cmd:ld
+	cmd:sed
 	"
 
 

@@ -28,6 +28,7 @@ BUILD_PREREQUIRES="
 	haiku_devel >= $haikuVersion
 	cmd:awk
 	cmd:gcc
+	cmd:grep
 	cmd:ld
 	cmd:make
 	cmd:perl

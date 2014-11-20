@@ -38,6 +38,7 @@ BUILD_PREREQUIRES="
 	cmd:aclocal
 	cmd:autoconf
 	cmd:gcc$secondaryArchSuffix
+	cmd:grep
 	cmd:ld$secondaryArchSuffix
 	cmd:libtoolize
 	cmd:make

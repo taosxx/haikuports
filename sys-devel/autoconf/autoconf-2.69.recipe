@@ -42,6 +42,7 @@ BUILD_REQUIRES="
 BUILD_PREREQUIRES="
 	haiku_devel >= $haikuVersion
 	cmd:awk
+	cmd:grep
 	cmd:m4
 	cmd:make
 	cmd:makeinfo

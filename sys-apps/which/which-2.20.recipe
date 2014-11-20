@@ -21,7 +21,9 @@ BUILD_REQUIRES="
 BUILD_PREREQUIRES="
 	haiku_devel >= $haikuVersion
 	cmd:gcc
+	cmd:grep
 	cmd:make
+	cmd:sed
 "
 
 BUILD()

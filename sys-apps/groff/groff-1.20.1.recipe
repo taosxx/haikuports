@@ -65,6 +65,7 @@ BUILD_PREREQUIRES="
 	cmd:aclocal
 	cmd:autoconf
 	cmd:gcc
+	cmd:grep
 	cmd:ld
 	cmd:libtoolize
 	cmd:make

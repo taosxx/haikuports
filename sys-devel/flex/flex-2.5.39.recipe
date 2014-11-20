@@ -34,6 +34,7 @@ BUILD_PREREQUIRES="
 	cmd:autoconf
 	cmd:automake
 	cmd:gcc
+	cmd:grep
 	cmd:ld
 	cmd:libtoolize
 	cmd:make
@@ -43,7 +44,7 @@ BUILD_PREREQUIRES="
 
 BUILD()
 {
-	rm aclocal.m4
+	rm -f aclocal.m4
 	libtoolize --force --copy --install
 	aclocal -I m4
 	autoconf

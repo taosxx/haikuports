@@ -34,6 +34,7 @@ BUILD_PREREQUIRES="
 	haiku${secondaryArchSuffix}_devel >= $haikuVersion
 	cmd:autoconf
 	cmd:gcc$secondaryArchSuffix
+	cmd:grep
 	cmd:ld$secondaryArchSuffix
 	cmd:libtoolize
 	cmd:make
