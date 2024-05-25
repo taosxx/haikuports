@@ -20,16 +20,17 @@ COPYRIGHT="1995-2016 Joerg Schilling (cdrecord, readcd)
 Pearson, 2006 HELIOS Software GmbH (mkisofs)"
 LICENSE="GNU GPL v2
 	CDDL v1"
-REVISION="1"
+REVISION="2"
 SOURCE_URI="http://downloads.sf.net/cdrtools/cdrtools-${portVersion/\~/}.tar.bz2"
 CHECKSUM_SHA256="aa28438f458ef3f314b79f2029db27679dae1d5ffe1569b6de57742511915e81"
 SOURCE_DIR="cdrtools-${portVersion%\~*}"
 PATCHES="
 	cdrtools-${portVersion%\~*}-Defaults.haiku.patch
 	cdrtools-${portVersion%\~*}-scsi-beos.c.patch
+	cdrtools-${portVersion%\~*}-clonable-area.patch
 	"
 
-ARCHITECTURES="x86_gcc2 x86 x86_64 ?arm ?ppc"
+ARCHITECTURES="all ?arm ?ppc"
 SECONDARY_ARCHITECTURES="x86"
 
 GLOBAL_WRITABLE_FILES="
@@ -39,22 +40,22 @@ GLOBAL_WRITABLE_FILES="
 
 PROVIDES="
 	cdrtools$secondaryArchSuffix = $portVersion compat >= 3
-	cmd:devdump$secondaryArchSuffix = $portVersion compat >= 3
-	cmd:rscsi$secondaryArchSuffix = $portVersion compat >= 3
-	cmd:scgcheck$secondaryArchSuffix = $portVersion compat >= 3
-	cmd:mkisofs$secondaryArchSuffix = $portVersion compat >= 3
 	cmd:btcflash$secondaryArchSuffix = $portVersion compat >= 3
-	cmd:scgskeleton$secondaryArchSuffix = $portVersion compat >= 3
-	cmd:isovfy$secondaryArchSuffix = $portVersion compat >= 3
-	cmd:readcd$secondaryArchSuffix = $portVersion compat >= 3
-	cmd:isodebug$secondaryArchSuffix = $portVersion compat >= 3
 	cmd:cdda2mp3$secondaryArchSuffix = $portVersion compat >= 3
 	cmd:cdda2ogg$secondaryArchSuffix = $portVersion compat >= 3
 	cmd:cdda2wav$secondaryArchSuffix = $portVersion compat >= 3
-	cmd:mkhybrid$secondaryArchSuffix = $portVersion compat >= 3
 	cmd:cdrecord$secondaryArchSuffix = $portVersion compat >= 3
+	cmd:devdump$secondaryArchSuffix = $portVersion compat >= 3
+	cmd:isodebug$secondaryArchSuffix = $portVersion compat >= 3
 	cmd:isodump$secondaryArchSuffix = $portVersion compat >= 3
 	cmd:isoinfo$secondaryArchSuffix = $portVersion compat >= 3
+	cmd:isovfy$secondaryArchSuffix = $portVersion compat >= 3
+	cmd:mkhybrid$secondaryArchSuffix = $portVersion compat >= 3
+	cmd:mkisofs$secondaryArchSuffix = $portVersion compat >= 3
+	cmd:readcd$secondaryArchSuffix = $portVersion compat >= 3
+	cmd:rscsi$secondaryArchSuffix = $portVersion compat >= 3
+	cmd:scgcheck$secondaryArchSuffix = $portVersion compat >= 3
+	cmd:scgskeleton$secondaryArchSuffix = $portVersion compat >= 3
 	"
 REQUIRES="
 	haiku$secondaryArchSuffix
@@ -63,9 +64,9 @@ REQUIRES="
 PROVIDES_devel="
 	cdrtools${secondaryArchSuffix}_devel = $portVersion
 	devel:libcdrdeflt$secondaryArchSuffix = $portVersion compat >= 3
+	devel:libdeflt$secondaryArchSuffix = $portVersion compat >= 3
 	devel:libedc_ecc$secondaryArchSuffix = $portVersion compat >= 3
 	devel:libedc_ecc_dec$secondaryArchSuffix = $portVersion compat >= 3
-	devel:libdeflt$secondaryArchSuffix = $portVersion compat >= 3
 	devel:libfile$secondaryArchSuffix = $portVersion compat >= 3
 	devel:libfind$secondaryArchSuffix = $portVersion compat >= 3
 	devel:libhfs$secondaryArchSuffix = $portVersion compat >= 3
@@ -73,9 +74,9 @@ PROVIDES_devel="
 	devel:libparanoia$secondaryArchSuffix = $portVersion compat >= 3
 	devel:librscg$secondaryArchSuffix = $portVersion compat >= 3
 	devel:libscg$secondaryArchSuffix = $portVersion compat >= 3
-	devel:libsiconv$secondaryArchSuffix = $portVersion compat >= 3
 	devel:libscgcmd$secondaryArchSuffix = $portVersion compat >= 3
 	devel:libschily$secondaryArchSuffix = $portVersion compat >= 3
+	devel:libsiconv$secondaryArchSuffix = $portVersion compat >= 3
 	"
 REQUIRES_devel="
 	cdrtools$secondaryArchSuffix == $portVersion base
