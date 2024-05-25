@@ -1,0 +1,89 @@
+SUMMARY="Async Resolver Implementation from OpenBSD/OpenSMTPD"
+DESCRIPTION="libasr is a free, simple and portable asynchronous resolver \
+library. \
+It allows to run dns queries and perform hostname resolutions in a fully \
+asynchronous fashion. The implementation is thread-less, fork-less, and \
+does not make use of signals or other \"tricks\" that might get in the \
+developer's way. The API was initially developped for the OpenBSD \
+operating system, where it is natively supported."
+HOMEPAGE="https://github.com/OpenSMTPD/libasr/"
+COPYRIGHT="2001 Jakob Schlyter
+	Internet Software Consortium
+	David Mazieres
+	Damien Miller
+	Markus Friedl
+	Todd C. Miller
+	Henning Brauer
+	Pierre-Yves Ritschard
+	Reyk Floeter
+	Theo de Raadt
+	Ted Unangst
+	Charles Longeau
+	The Regents of the University of California
+	Ian F. Darwin
+	Damien Miller
+	Eric P. Allman
+	1995 Tatu Ylonen
+	1995 Tatu Ylonen
+	2003 Peter Stuge"
+LICENSE="BSD (2-clause)
+	GNU GPL v3
+	LIBASR"
+REVISION="7"
+SOURCE_URI="https://github.com/OpenSMTPD/libasr/archive/libasr-$portVersion.tar.gz"
+CHECKSUM_SHA256="4ab54264206e255fd6c2de982764bb5ce7857ec8f649ad3ee45771244593b6e1"
+SOURCE_DIR="libasr-libasr-$portVersion"
+
+ARCHITECTURES="all"
+SECONDARY_ARCHITECTURES="x86_gcc2 x86"
+
+libVersion="0.0.2"
+libVersionCompat="$libVersion compat >= ${libVersion%%.*}"
+
+PROVIDES="
+	libasr$secondaryArchSuffix = $portVersion
+	lib:libasr$secondaryArchSuffix = $libVersionCompat
+	"
+REQUIRES="
+	haiku$secondaryArchSuffix
+	lib:libssl$secondaryArchSuffix
+	"
+
+PROVIDES_devel="
+	libasr${secondaryArchSuffix}_devel = $portVersion
+	devel:libasr$secondaryArchSuffix = $libVersionCompat
+	"
+REQUIRES_devel="
+	libasr$secondaryArchSuffix == $portVersion base
+	"
+
+BUILD_REQUIRES="
+	haiku${secondaryArchSuffix}_devel
+	devel:libssl$secondaryArchSuffix
+	"
+BUILD_PREREQUIRES="
+	cmd:autoconf
+	cmd:gcc$secondaryArchSuffix
+	cmd:libtoolize$secondaryArchSuffix
+	cmd:make
+	"
+
+BUILD()
+{
+	touch README NEWS AUTHORS
+	autoreconf -fi
+	runConfigure ./configure CFLAGS="-D_BSD_SOURCE" \
+		--disable-static
+	make $jobArgs
+}
+
+INSTALL()
+{
+	make install
+
+	rm $libDir/libasr.la
+
+	prepareInstalledDevelLib libasr
+
+	packageEntries devel $developDir
+}

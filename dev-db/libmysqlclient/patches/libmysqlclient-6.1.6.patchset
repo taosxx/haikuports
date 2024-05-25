@@ -1,0 +1,241 @@
+From 7340e870fc8846069b6e955161dd8f1a6fc0e3ed Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Adri=C3=A1n=20Arroyo=20Calle?=
+ <adrian.arroyocalle@gmail.com>
+Date: Wed, 29 Aug 2018 13:34:46 +0300
+Subject: Fix build on Haiku
+
+
+diff --git a/extra/CMakeLists.txt b/extra/CMakeLists.txt
+index ac28c62..c8bb883 100644
+--- a/extra/CMakeLists.txt
++++ b/extra/CMakeLists.txt
+@@ -67,7 +67,7 @@ TARGET_LINK_LIBRARIES(perror mysys mysys_ssl)
+ SET_TARGET_PROPERTIES(perror PROPERTIES LINKER_LANGUAGE CXX)
+ 
+ MYSQL_ADD_EXECUTABLE(resolveip EXCLUDE_FROM_ALL resolveip.c)
+-TARGET_LINK_LIBRARIES(resolveip mysys mysys_ssl)
++TARGET_LINK_LIBRARIES(resolveip mysys mysys_ssl network)
+ SET_TARGET_PROPERTIES(resolveip PROPERTIES LINKER_LANGUAGE CXX)
+ IF(CMAKE_SYSTEM_NAME STREQUAL "SunOS")
+   INCLUDE(CheckFunctionExists)
+diff --git a/include/my_sys.h b/include/my_sys.h
+index 89011a8..3fe6e9d 100644
+--- a/include/my_sys.h
++++ b/include/my_sys.h
+@@ -16,6 +16,7 @@
+ #ifndef _my_sys_h
+ #define _my_sys_h
+ 
++#include <sys/time.h>
+ #include "my_global.h"                  /* C_MODE_START, C_MODE_END */
+ #include "my_pthread.h"
+ #include "m_ctype.h"                    /* for CHARSET_INFO */
+@@ -26,9 +27,7 @@
+ #ifdef _WIN32
+ #include <malloc.h>
+ #endif
+-#ifdef HAVE_UNISTD_H
+ #include <unistd.h>
+-#endif
+ 
+ C_MODE_START
+ 
+diff --git a/include/my_time.h b/include/my_time.h
+index 90452f0..b791417 100644
+--- a/include/my_time.h
++++ b/include/my_time.h
+@@ -17,6 +17,7 @@
+   This is a private header of sql-common library, containing
+   declarations for my_time.c
+ */
++#include <sys/time.h>
+ 
+ #ifndef _my_time_h_
+ #define _my_time_h_
+diff --git a/mysys/my_getsystime.c b/mysys/my_getsystime.c
+index 3007c4e..1cd4446 100644
+--- a/mysys/my_getsystime.c
++++ b/mysys/my_getsystime.c
+@@ -17,12 +17,12 @@
+ /* thus to get the current time we should use the system function
+    with the highest possible resolution */
+ 
++#include <sys/time.h>
++
+ #include "mysys_priv.h"
+ #include "my_static.h"
+ 
+-#if HAVE_SYS_TIME_H
+-#include <sys/time.h>
+-#endif
++
+ 
+ /**
+   Get high-resolution time.
+diff --git a/mysys/my_init.c b/mysys/my_init.c
+index c0ba3ae..c3ac341 100644
+--- a/mysys/my_init.c
++++ b/mysys/my_init.c
+@@ -12,6 +12,8 @@
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301  USA */
++#include <sys/time.h>
++#include <sys/resource.h>
+ 
+ #include "mysys_priv.h"
+ #include "my_static.h"
+@@ -19,10 +21,6 @@
+ #include "m_string.h"
+ #include "mysql/psi/mysql_stage.h"
+ 
+-#ifdef HAVE_SYS_RESOURCE_H
+-#include <sys/resource.h>
+-#endif
+-
+ #ifdef _WIN32
+ #include <locale.h>
+ #include <crtdbg.h>
+@@ -187,25 +185,6 @@ void my_end(int infoflag)
+ 
+   if ((infoflag & MY_GIVE_INFO) || print_info)
+   {
+-#ifdef HAVE_GETRUSAGE
+-    struct rusage rus;
+-    if (!getrusage(RUSAGE_SELF, &rus))
+-      fprintf(info_file,"\n\
+-User time %.2f, System time %.2f\n\
+-Maximum resident set size %ld, Integral resident set size %ld\n\
+-Non-physical pagefaults %ld, Physical pagefaults %ld, Swaps %ld\n\
+-Blocks in %ld out %ld, Messages in %ld out %ld, Signals %ld\n\
+-Voluntary context switches %ld, Involuntary context switches %ld\n",
+-	      (rus.ru_utime.tv_sec * SCALE_SEC +
+-	       rus.ru_utime.tv_usec / SCALE_USEC) / 100.0,
+-	      (rus.ru_stime.tv_sec * SCALE_SEC +
+-	       rus.ru_stime.tv_usec / SCALE_USEC) / 100.0,
+-	      rus.ru_maxrss, rus.ru_idrss,
+-	      rus.ru_minflt, rus.ru_majflt,
+-	      rus.ru_nswap, rus.ru_inblock, rus.ru_oublock,
+-	      rus.ru_msgsnd, rus.ru_msgrcv, rus.ru_nsignals,
+-	      rus.ru_nvcsw, rus.ru_nivcsw);
+-#endif
+ #if defined(_WIN32) && defined(_MSC_VER)
+    _CrtSetReportMode( _CRT_WARN, _CRTDBG_MODE_FILE );
+    _CrtSetReportFile( _CRT_WARN, _CRTDBG_FILE_STDERR );
+diff --git a/tests/CMakeLists.txt b/tests/CMakeLists.txt
+index cb8599d..49d8e3f 100644
+--- a/tests/CMakeLists.txt
++++ b/tests/CMakeLists.txt
+@@ -18,7 +18,7 @@ ADD_DEFINITIONS("-DMYSQL_CLIENT")
+ INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/include)
+ 
+ ADD_EXECUTABLE(mysql_client_test mysql_client_test.c)
+-TARGET_LINK_LIBRARIES(mysql_client_test mysqlclient)
++TARGET_LINK_LIBRARIES(mysql_client_test mysqlclient network)
+ SET_TARGET_PROPERTIES(mysql_client_test PROPERTIES LINKER_LANGUAGE CXX)
+ 
+ #
+-- 
+2.24.0
+
+
+From 0124d20f7f0c26d57c7a44598977b86081714520 Mon Sep 17 00:00:00 2001
+From: begasus <begasus@gmail.com>
+Date: Sat, 9 Nov 2019 17:41:18 +0100
+Subject: 32bit fixes for int32, uint32
+
+
+diff --git a/extra/resolveip.c b/extra/resolveip.c
+index 54ce3eb..2f505dc 100644
+--- a/extra/resolveip.c
++++ b/extra/resolveip.c
+@@ -41,7 +41,11 @@
+ extern int h_errno;
+ #endif
+ 
++#if defined(__HAIKU__)
++#include <SupportDefs.h>
++#else
+ typedef uint32 in_addr_t;
++#endif
+ 
+ static my_bool silent;
+ 
+diff --git a/include/my_global.h b/include/my_global.h
+index acadb44..b95c02b 100644
+--- a/include/my_global.h
++++ b/include/my_global.h
+@@ -458,8 +458,12 @@ typedef unsigned char uint8;    /* Unsigned integer >= 8  bits */
+ typedef short int16;
+ typedef unsigned short uint16;
+ #if SIZEOF_INT == 4
++#if defined(__HAIKU__)
++#include <SupportDefs.h>
++#else
+ typedef int int32;
+ typedef unsigned int uint32;
++#endif
+ #elif SIZEOF_LONG == 4
+ typedef long int32;
+ typedef unsigned long uint32;
+-- 
+2.24.0
+
+
+From 860d4df086c1762169c6a9c87e1996f6d7a4767e Mon Sep 17 00:00:00 2001
+From: begasus <begasus@gmail.com>
+Date: Sat, 9 Nov 2019 17:45:50 +0100
+Subject: 64bit fix for int64, uint64
+
+
+diff --git a/include/my_global.h b/include/my_global.h
+index b95c02b..baff70a 100644
+--- a/include/my_global.h
++++ b/include/my_global.h
+@@ -481,8 +481,12 @@ typedef unsigned long	ulong;		  /* Short for unsigned long */
+ */
+ typedef unsigned long long int ulonglong; /* ulong or unsigned long long */
+ typedef long long int	longlong;
++#if defined(__HAIKU__)
++#include <SupportDefs.h>
++#else
+ typedef longlong int64;
+ typedef ulonglong uint64;
++#endif
+ 
+ #if defined (_WIN32)
+ typedef unsigned __int64 my_ulonglong;
+-- 
+2.24.0
+
+
+From 5692920f18f8419a21dbca3df87d676c085a933d Mon Sep 17 00:00:00 2001
+From: begasus <begasus@gmail.com>
+Date: Sat, 9 Nov 2019 20:45:49 +0100
+Subject: Add -lnetwork search
+
+
+diff --git a/configure.cmake b/configure.cmake
+index a4f5e8f..5052084 100644
+--- a/configure.cmake
++++ b/configure.cmake
+@@ -308,6 +308,7 @@ IF(UNIX)
+   MY_SEARCH_LIBS(bind "bind;socket" LIBBIND)
+   MY_SEARCH_LIBS(crypt crypt LIBCRYPT)
+   MY_SEARCH_LIBS(setsockopt socket LIBSOCKET)
++  MY_SEARCH_LIBS(socket network LIBNETWORK)
+   MY_SEARCH_LIBS(dlopen dl LIBDL)
+   MY_SEARCH_LIBS(sched_yield rt LIBRT)
+   IF(NOT LIBRT)
+@@ -316,7 +317,7 @@ IF(UNIX)
+   MY_SEARCH_LIBS(timer_create rt LIBRT)
+ 
+   SET(CMAKE_REQUIRED_LIBRARIES 
+-    ${LIBM} ${LIBNSL} ${LIBBIND} ${LIBCRYPT} ${LIBSOCKET} ${LIBDL} ${CMAKE_THREAD_LIBS_INIT} ${LIBRT})
++    ${LIBM} ${LIBNSL} ${LIBBIND} ${LIBCRYPT} ${LIBSOCKET} ${LIBDL} ${LIBNETWORK} ${CMAKE_THREAD_LIBS_INIT} ${LIBRT})
+   # Need explicit pthread for gcc -fsanitize=address
+   IF(CMAKE_C_FLAGS MATCHES "-fsanitize=")
+     SET(CMAKE_REQUIRED_LIBRARIES ${CMAKE_REQUIRED_LIBRARIES} pthread)
+-- 
+2.24.0
+

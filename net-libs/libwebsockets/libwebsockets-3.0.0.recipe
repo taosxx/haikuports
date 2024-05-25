@@ -1,0 +1,86 @@
+SUMMARY="C library for lightweight websocket clients and servers"
+DESCRIPTION="Libwebsockets (LWS) is a flexible, lightweight pure C library \
+for implementing modern network protocols easily with a tiny footprint, \
+using a nonblocking event loop."
+HOMEPAGE="https://libwebsockets.org/"
+COPYRIGHT="2010-2018 Andy Green"
+LICENSE="GNU LGPL v2.1"
+REVISION="3"
+SOURCE_URI="https://github.com/warmcat/libwebsockets/archive/v$portVersion.tar.gz"
+CHECKSUM_SHA256="a6b611c212c52f161f70556339fdaa199b7e9b6a167c4638e086d19db75d6290"
+SOURCE_FILENAME="libwebsockets-$portVersion.tar.gz"
+SOURCE_DIR="libwebsockets-$portVersion"
+
+ARCHITECTURES="all !x86_gcc2"
+SECONDARY_ARCHITECTURES="x86"
+
+libVersion="13"
+libVersionCompat="$libVersion compat >= ${libVersion%%.*}"
+
+PROVIDES="
+	libwebsockets$secondaryArchSuffix = $portVersion
+	lib:libwebsockets$secondaryArchSuffix = $libVersionCompat
+	"
+REQUIRES="
+	haiku$secondaryArchSuffix
+	lib:libcrypto$secondaryArchSuffix
+	lib:libssl$secondaryArchSuffix
+	lib:libz$secondaryArchSuffix
+	"
+
+PROVIDES_devel="
+	libwebsockets${secondaryArchSuffix}_devel = $portVersion
+	devel:libwebsockets$secondaryArchSuffix = $libVersionCompat
+	"
+REQUIRES_devel="
+	libwebsockets$secondaryArchSuffix == $portVersion base
+	"
+
+BUILD_REQUIRES="
+	haiku${secondaryArchSuffix}_devel
+	devel:libcrypto$secondaryArchSuffix
+	devel:libssl$secondaryArchSuffix
+	devel:libz$secondaryArchSuffix
+	"
+BUILD_PREREQUIRES="
+	cmd:cmake
+	cmd:gcc$secondaryArchSuffix
+	cmd:make
+	cmd:openssl
+	"
+
+BUILD()
+{
+	cmake -Bbuild -S. -DCMAKE_BUILD_TYPE=release \
+		-DCMAKE_INSTALL_PREFIX="$prefix" \
+		-DLIB_SUFFIX=$secondaryArchSubDir \
+		-DLWS_INSTALL_CMAKE_DIR="$libDir"/cmake/libwebsockets \
+		-DLWS_INSTALL_INCLUDE_DIR="$includeDir" \
+		-DLWS_WITHOUT_EXTENSIONS=OFF \
+		-DLWS_WITHOUT_TESTAPPS=ON \
+		-DLWS_WITH_HTTP2=ON \
+		-DLWS_WITH_CGI=ON \
+		-DLWS_IPV6=ON \
+		-DLWS_WITH_ZIP_FOPS=ON \
+		-DLWS_WITH_RANGES=ON \
+		-DLWS_WITH_ACME=ON \
+		-DLWS_WITH_SERVER_STATUS=ON \
+		-DLWS_WITH_STATIC=OFF
+	make -C build $jobArgs
+}
+
+INSTALL()
+{
+	make -C build install
+
+	# remove pkgconfig file for static library
+	# this is disabled during build
+	rm -f $libDir/pkgconfig/libwebsockets_static.pc
+
+	prepareInstalledDevelLib libwebsockets
+	fixPkgconfig
+
+	packageEntries devel \
+		"$developDir" \
+		"$libDir"/cmake
+}

@@ -10,30 +10,25 @@ HOMEPAGE="http://openjdk.java.net/"
 COPYRIGHT="2012 Oracle and/or its affiliates."
 LICENSE="GNU GPL v2"
 
-SRC_URI="https://dl.dropboxusercontent.com/u/61946213/j2sdk-image-140528.tar.xz"
+SOURCE_URI="https://dl.dropboxusercontent.com/u/61946213/j2sdk-image-140528.tar.xz"
 CHECKSUM_SHA256="fe9ad5156baf62a14213667f18bf88035daf5f24d6370afc9af30d079d8609a3"
 SOURCE_DIR="j2sdk-image"
 
-SRC_URI_2="http://www.eu.apache.org/dist/ant/binaries/apache-ant-1.9.4-bin.zip"
+SOURCE_URI_2="http://www.eu.apache.org/dist/ant/binaries/apache-ant-1.9.4-bin.zip"
 CHECKSUM_SHA256_2="973d97d656e65561e2753823de6cf6db35570aaf93eeec6e7cb3d68e1ec4d0e8"
 SOURCE_DIR_2="apache-ant-1.9.4"
 
-SRC_URI_3="hg+http://hg.openjdk.java.net/jdk7u/jdk7u#jdk7u80-b32"
-SRC_URI_4="hg+http://hg.openjdk.java.net/jdk7u/jdk7u/langtools#jdk7u80-b32"
-SRC_URI_5="hg+http://bitbucket.org/hamishm/haiku-jdk7u-corba#58510ce"
-SRC_URI_6="hg+http://hg.openjdk.java.net/jdk7u/jdk7u/jaxp#jdk7u80-b32"
-SRC_URI_7="hg+http://hg.openjdk.java.net/jdk7u/jdk7u/jaxws#jdk7u80-b32"
-SRC_URI_8="hg+http://bitbucket.org/hamishm/haiku-jdk7u-hotspot#43c8a75"
-SRC_URI_9="hg+http://bitbucket.org/hamishm/haiku-jdk7u-jdk#5d173cf"
+SOURCE_URI_3="hg+http://hg.openjdk.java.net/jdk7u/jdk7u#jdk7u80-b32"
+SOURCE_URI_4="hg+http://hg.openjdk.java.net/jdk7u/jdk7u/langtools#jdk7u80-b32"
+SOURCE_URI_5="hg+http://bitbucket.org/hamishm/haiku-jdk7u-corba#58510ce"
+SOURCE_URI_6="hg+http://hg.openjdk.java.net/jdk7u/jdk7u/jaxp#jdk7u80-b32"
+SOURCE_URI_7="hg+http://hg.openjdk.java.net/jdk7u/jdk7u/jaxws#jdk7u80-b32"
+SOURCE_URI_8="hg+http://bitbucket.org/hamishm/haiku-jdk7u-hotspot#43c8a75"
+SOURCE_URI_9="hg+http://bitbucket.org/hamishm/haiku-jdk7u-jdk#5d173cf"
 
-REVISION="2"
-ARCHITECTURES="x86"
-if [ $effectiveTargetArchitecture != x86_gcc2 ]; then
-	# x86_gcc2 is fine as primary target architecture as long as we're building
-	# for a different secondary architecture.
-	ARCHITECTURES="$ARCHITECTURES x86_gcc2"
-fi
-SECONDARY_ARCHITECTURES="x86"
+REVISION="4"
+ARCHITECTURES="!x86_gcc2 ?x86"
+SECONDARY_ARCHITECTURES="?x86"
 
 DISABLE_SOURCE_PACKAGE=yes
 	# at least as long as Ant and a complete SDK image are part of the sources
@@ -84,7 +79,7 @@ PROVIDES="
 	"
 
 REQUIRES="
-	haiku$secondaryArchSuffx
+	haiku$secondaryArchSuffix
 	lib:libfreetype$secondaryArchSuffix
 	lib:libiconv$secondaryArchSuffix
 	lib:libz$secondaryArchSuffix
@@ -114,6 +109,9 @@ BUILD_PREREQUIRES="
 	cmd:head
 	cmd:file
 	"
+
+PATCHES="openjdk_x86-1.7.u80_b32-source9.patchset"
+ADDITIONAL_FILES="jexec.rdef"
 
 BUILD()
 {
@@ -161,7 +159,8 @@ INSTALL()
 	mkdir -p $(dirname $jdkDir)
 	cp -a output/j2sdk-image $jdkDir
 
-	addResourcesToBinaries $portDir/sources/jexec.rdef $jdkDir/lib/jexec
+	addResourcesToBinaries $portDir/additional-files/jexec.rdef \
+		$jdkDir/lib/jexec
 
 	# set up the cacerts file
 	cacerts=$jdkDir/jre/lib/security/cacerts
@@ -187,4 +186,18 @@ INSTALL()
 	mkdir -p $(dirname $jdkProfile)
 	echo "JAVA_HOME=$jdkDir" > $jdkProfile
 	echo "export JAVA_HOME" >> $jdkProfile
+
+	packageEntries devel \
+		$libDir/openjdk/src.zip \
+		$libDir/openjdk/sample \
+		$libDir/openjdk/demo
 }
+
+SUMMARY_devel="Source files, demos, and examples from the OpenJDK Development Kit"
+PROVIDES_devel="
+	openjdk${secondaryArchSuffix}_devel = $portVersion compat >= 1.7
+	devel:openjdk$secondaryArchSuffix
+	"
+REQUIRES_devel="
+	openjdk$secondaryArchSuffix
+	"

@@ -1,37 +1,43 @@
-SUMMARY="Paint and imaging software for Haiku"
-DESCRIPTION="
-BeCasso - Paint and imaging software for Haiku, originally written for BeOS by \
-Sum Software.
-"
-HOMEPAGE="https://github.com/orangejua/Becasso"
-SRC_URI="git+https://github.com/orangejua/Becasso"
-REVISION="1"
+SUMMARY="A paint and imaging software"
+DESCRIPTION="Becasso is a paint and imaging software for Haiku, originally \
+written for BeOS by Sum Software.
+It features alpha channel support, layering, multi-level undo/redo, add-on \
+architecture for external filters, transformators and generators, an \
+orthogonal user interface, and import/export of numerous file formats."
+HOMEPAGE="https://github.com/HaikuArchives/Becasso"
+COPYRIGHT="1997-2003 Sum Software
+	2013 Julian Harnath"
+LICENSE="MIT"
+REVISION="8"
+srcGitRev="0609132a1e49c089ac94579f55d45734da0221e6"
+SOURCE_URI="https://github.com/HaikuArchives/Becasso/archive/$srcGitRev.tar.gz"
+CHECKSUM_SHA256="a75d59f0f3a1fbb630c06c1f79841c9c12d43b8666dc59af23ba6497e32d3627"
+SOURCE_DIR="Becasso-$srcGitRev"
 
-ARCHITECTURES="x86_gcc2 ?x86 ?x86_64"
+ARCHITECTURES="all"
 
-PROVIDES="
-	becasso = $portVersion
-	app:BeCasso = $portVersion
-	"
-
-BUILD_PREREQUIRES="
-	cmd:nasm
-	cmd:gcc
-	cmd:jam"
-	
-BUILD_REQUIRES="
-	haiku
-	haiku_devel
-	devel:libz"
-		
 USER_SETTINGS_FILES="
 	settings/Becasso directory"
 
-COPYRIGHT="
-	1997-2003 Sum Software <sander@stoks.nl>
-	2013 Julian Harnath <julian.harnath@rwth-aachen.de>"
+PROVIDES="
+	becasso = $portVersion
+	app:Becasso = $portVersion
+	"
+REQUIRES="
+	haiku
+	lib:libstdc++
+	lib:libz
+	"
 
-LICENSE="MIT"
+BUILD_REQUIRES="
+	haiku_devel
+	devel:libz
+	"
+BUILD_PREREQUIRES="
+	cmd:gcc
+	cmd:jam
+	cmd:nasm
+	"
 
 BUILD()
 {
@@ -41,11 +47,14 @@ BUILD()
 INSTALL()
 {
 	jam install
-	
-	beCassoDir=$appsDir/BeCasso
-	mkdir -p $beCassoDir
-	
-	cp -R target/* $beCassoDir
-	
-	addAppDeskbarSymlink $beCassoDir/Becasso
+
+	becassoDir=$appsDir/Becasso
+	mkdir -p $becassoDir $becassoDir/Documentation $becassoDir/Tutorials
+
+	cp -R target/* $becassoDir
+	cp -R documentation/Becasso\ 2.0/* $becassoDir/Documentation
+	cp -R source/BecassoAPI2.0/API $becassoDir/Documentation
+	cp -R documentation/Tutorials $becassoDir
+
+	addAppDeskbarSymlink $becassoDir/Becasso
 }

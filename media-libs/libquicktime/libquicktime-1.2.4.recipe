@@ -1,20 +1,19 @@
-SUMMARY="A library to handle Quicktime format files."
-DESCRIPTION="
-libquicktime is a library for reading and writing quicktime files. It \
-is based on the quicktime4linux library, with the following \
+SUMMARY="A library to handle Quicktime format files"
+DESCRIPTION="libquicktime is a library for reading and writing quicktime \
+files. It is based on the quicktime4linux library, with the following \
 extensions:
 
     * Sourcetree upgraded with autoconf/automake/libtool and all the \
 other stuff, people like in "standard" linux libraries.
-    * All 3rd party libraries (jpeg, OggVorbis) were removed to reduce \ 
-download size, compilation time and code duplication on users harddisks. \ 
+    * All 3rd party libraries (jpeg, OggVorbis) were removed to reduce \
+download size, compilation time and code duplication on users harddisks. \
 Instead, the sytemwide installed libaries are autodetected by the \
 configure script.
-    * All codecs have been moved into dynamically loadable modules. \ 
+    * All codecs have been moved into dynamically loadable modules. \
 This makes it possible to distribute closed source codecs (or codecs \
 with an incompatible license) as separate packages.
     * Unlike other quicktime libraries, we are source compatible with \
-quicktime4linux. Programs like cinelerra or xmovie can be compiled with \ 
+quicktime4linux. Programs like cinelerra or xmovie can be compiled with \
 libquicktime (if the build system is modified, see our web page for more \
 info).
     * The codecs themselves are also source compatible with \
@@ -28,15 +27,15 @@ HOMEPAGE="http://libquicktime.sourceforge.net"
 COPYRIGHT="
 	2002 Heroine Virtual Ltd.
 	2002-2007 Members of the libquicktime project.
-"
+	"
 LICENSE="GNU LGPL v2.1"
-SRC_URI="http://sourceforge.net/projects/libquicktime/files/libquicktime/$portVersion/libquicktime-$portVersion.tar.gz"
+REVISION="5"
+SOURCE_URI="http://sourceforge.net/projects/libquicktime/files/libquicktime/$portVersion/libquicktime-$portVersion.tar.gz"
 CHECKSUM_SHA256="1c53359c33b31347b4d7b00d3611463fe5e942cae3ec0fefe0d2fd413fd47368"
-REVISION="1"
-ARCHITECTURES="x86_gcc2 x86 x86_64"
-SECONDARY_ARCHITECTURES="x86_gcc2 x86"
-
 PATCHES="libquicktime-$portVersion.patchset"
+
+ARCHITECTURES="all"
+SECONDARY_ARCHITECTURES="x86_gcc2 x86"
 
 PROVIDES="
 	libquicktime$secondaryArchSuffix = $portVersion compat >= 1.2
@@ -57,48 +56,52 @@ if [ -z "$secondaryArchSuffix" ]; then
 fi
 REQUIRES="
 	haiku$secondaryArchSuffix
-	lib:libpng15$secondaryArchSuffix
-	lib:libjpeg$secondaryArchSuffix
-	lib:libvorbis$secondaryArchSuffix
-	lib:libogg$secondaryArchSuffix
 	lib:libdv$secondaryArchSuffix
-	lib:libmp3lame$secondaryArchSuffix
 	lib:libfaad$secondaryArchSuffix
 	lib:libiconv$secondaryArchSuffix
-	lib:libz$secondaryArchSuffix
 	lib:libintl$secondaryArchSuffix
+	lib:libjpeg$secondaryArchSuffix
+	lib:libmp3lame$secondaryArchSuffix
+	lib:libogg$secondaryArchSuffix
+	lib:libvorbis$secondaryArchSuffix
+	lib:libz$secondaryArchSuffix
 	"
+
+PROVIDES_devel="
+	libquicktime${secondaryArchSuffix}_devel = $portVersion compat >= 1.2
+	devel:libquicktime$secondaryArchSuffix = 0.0.0 compat >= 0
+	"
+REQUIRES_devel="
+	libquicktime$secondaryArchSuffix == $portVersion base
+	"
+
 BUILD_REQUIRES="
 	haiku${secondaryArchSuffix}_devel
-	devel:libpng15$secondaryArchSuffix
-	devel:libjpeg$secondaryArchSuffix
-	devel:libvorbis$secondaryArchSuffix
-	devel:libogg$secondaryArchSuffix
 	devel:libdv$secondaryArchSuffix
-	devel:libmp3lame$secondaryArchSuffix
 	devel:libfaad$secondaryArchSuffix
 	devel:libiconv$secondaryArchSuffix
-	devel:libz$secondaryArchSuffix
 	devel:libintl$secondaryArchSuffix
+	devel:libjpeg$secondaryArchSuffix
+	devel:libmp3lame$secondaryArchSuffix
+	devel:libogg$secondaryArchSuffix
+	devel:libvorbis$secondaryArchSuffix
+	devel:libz$secondaryArchSuffix
 	"
 BUILD_PREREQUIRES="
 	cmd:aclocal
-	cmd:autoconf
 	cmd:automake
+	cmd:autoreconf
 	cmd:gcc$secondaryArchSuffix
+	cmd:gettext
 	cmd:ld$secondaryArchSuffix
-	cmd:libtoolize
+	cmd:libtoolize$secondaryArchSuffix
 	cmd:make
 	cmd:pkg_config${secondaryArchSuffix}
-	cmd:gettext
 	"
 
 BUILD()
 {
-	libtoolize --force --copy --install
-	aclocal -I m4
-	autoconf
-	automake
+	autoreconf -fi
 	runConfigure ./configure --without-doxygen \
 		--with-libdv --without-cpuflags
 	make $jobArgs
@@ -108,6 +111,8 @@ INSTALL()
 {
 	make install
 
+	rm $libDir/libquicktime.la $libDir/libquicktime/lqt_*.la
+
 	prepareInstalledDevelLibs libquicktime
 	fixPkgconfig
 
@@ -115,13 +120,3 @@ INSTALL()
 	packageEntries devel \
 		$developDir
 }
-
-# ----- devel package -------------------------------------------------------
-
-PROVIDES_devel="
-	libquicktime${secondaryArchSuffix}_devel = $portVersion compat >= 1.2
-	devel:libquicktime$secondaryArchSuffix = 0.0.0 compat >= 0
-	"
-REQUIRES_devel="
-	libquicktime$secondaryArchSuffix == $portVersion base
-	"

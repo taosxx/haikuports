@@ -1,26 +1,31 @@
-SUMMARY="A platform game in which you play an angry bear whose son has been kidnapped by god."
-HOMEPAGE="http://www.stuff-o-matic.com/plee-the-bear/"
-LICENSE="GNU GPL v3"
-COPYRIGHT="2012 Stuff O Matic"
-SRC_URI="http://www.stuff-o-matic.com/plee-the-bear/download/file.php?platform=source"
-CHECKSUM_SHA256="41dfe864fe2d791d6f99ba7cd330e22c94fce19d82909054eeac594aa4f2924e"
-SRC_FILENAME="plee-the-bear-0.7.0.tgz"
+SUMMARY="A platform game in which you're a bear whose son has been kidnapped"
+DESCRIPTION="Plee the Bear is a platform game in which you play an angry bear \
+whose son has been kidnapped by god. Here is a guy hard to brave! Jump in \
+this amazing journey to find and rescue your son. Because you want to rescue \
+him, don't you? Or to slap him? Maybe both…
 
-REVISION="2"
-ARCHITECTURES="x86"
-if [ $effectiveTargetArchitecture != x86_gcc2 ]; then
-	# x86_gcc2 is fine as primary target architecture as long as we're building
-	# for a different secondary architecture.
-	ARCHITECTURES="x86_gcc2 $ARCHITECTURES"
-else
-	ARCHITECTURES="!x86_gcc2 $ARCHITECTURES"
-fi
-SECONDARY_ARCHITECTURES="!x86_gcc2 x86"
+With three levels of the storyline and four mini-games, Plee the Bear \
+received very positive criticisms. The players loved the fun, the graphics and \
+the music; the community around the free software movement appreciated the \
+overall process and the quality of the resources, remarkable for a free game; \
+and the indie gaming community was pleasantly surprised by the technical \
+skills and the details of the game."
+HOMEPAGE="http://www.stuff-o-matic.com/plee-the-bear/"
+COPYRIGHT="2012 Stuff O Matic"
+LICENSE="GNU GPL v3"
+REVISION="9"
+SOURCE_URI="https://src.fedoraproject.org/lookaside/extras/plee-the-bear/plee-the-bear_0.7.0-light.tar.gz/d6f6b2c4c51021747398eaaff3b6031c/plee-the-bear_0.7.0-light.tar.gz"
+CHECKSUM_SHA256="41dfe864fe2d791d6f99ba7cd330e22c94fce19d82909054eeac594aa4f2924e"
+SOURCE_FILENAME="plee-the-bear-0.7.0.tgz"
+SOURCE_DIR="plee-the-bear-0.7.0-light"
+PATCHES="plee_the_bear-$portVersion.patchset"
+
+ARCHITECTURES="?all !x86_gcc2"
+SECONDARY_ARCHITECTURES="?x86"
 
 PROVIDES="
-	plee_the_bear = $portVersion
+	plee_the_bear$secondaryArchSuffix = $portVersion
 	cmd:plee_the_bear$secondaryArchSuffix = $portVersion
-	lib:libplee_the_bear$secondaryArchSuffix = $portVersion
 	lib:libbear_audio$secondaryArchSuffix
 	lib:libbear_communication$secondaryArchSuffix
 	lib:libbear_debug$secondaryArchSuffix
@@ -34,76 +39,67 @@ PROVIDES="
 	lib:libbear_time$secondaryArchSuffix
 	lib:libbear_universe$secondaryArchSuffix
 	lib:libbear_visual$secondaryArchSuffix
+	lib:libplee_the_bear$secondaryArchSuffix = $portVersion
 	"
-
 REQUIRES="
 	haiku$secondaryArchSuffix
-	lib:libstdc++$secondaryArchSuffix
-	lib:libsdl2$secondaryArchSuffix
-	lib:libsdl$secondaryArchSuffix
-	lib:libsdl2_mixer$secondaryArchSuffix
-	lib:libintl$secondaryArchSuffix
-	lib:libGL$secondaryArchSuffix
-	lib:libjpeg$secondaryArchSuffix
-	lib:libpng$secondaryArchSuffix
-	lib:libz$secondaryArchSuffix
+	lib:libboost_filesystem$secondaryArchSuffix
+	lib:libboost_regex$secondaryArchSuffix
+	lib:libboost_system$secondaryArchSuffix
+	lib:libboost_thread$secondaryArchSuffix
 	lib:libclaw_dynamic_library$secondaryArchSuffix
 	lib:libclaw_graphic$secondaryArchSuffix
 	lib:libclaw_net$secondaryArchSuffix
 	lib:libclaw_tween$secondaryArchSuffix
-	lib:libboost_system$secondaryArchSuffix
-	lib:libboost_thread$secondaryArchSuffix
-	lib:libboost_filesystem$secondaryArchSuffix
-	lib:libboost_regex$secondaryArchSuffix
 	lib:libfreetype$secondaryArchSuffix
+	lib:libGL$secondaryArchSuffix
+	lib:libintl$secondaryArchSuffix
+	lib:libjpeg$secondaryArchSuffix
+	lib:libpng16$secondaryArchSuffix
+	lib:libSDL_1.2$secondaryArchSuffix
+	lib:libSDL2_2.0$secondaryArchSuffix
+	lib:libSDL2_mixer_2.0$secondaryArchSuffix
+	lib:libz$secondaryArchSuffix
 	"
+
 BUILD_REQUIRES="
-	devel:libsdl2$secondaryArchSuffix
-	devel:libsdl2_mixer$secondaryArchSuffix
-	devel:libsdl$secondaryArchSuffix
-	devel:sdl_mixer$secondaryArchSuffix
-	devel:libfreetype$secondaryArchSuffix
+	haiku${secondaryArchSuffix}_devel
+	devel:libboost_filesystem$secondaryArchSuffix >= 1.69.0
+	devel:libboost_regex$secondaryArchSuffix >= 1.69.0
+	devel:libboost_system$secondaryArchSuffix >= 1.69.0
+	devel:libboost_thread$secondaryArchSuffix >= 1.69.0
 	devel:libclaw_application$secondaryArchSuffix
-	devel:libz$secondaryArchSuffix
-	devel:libpng$secondaryArchSuffix
-	devel:libjpeg$secondaryArchSuffix
+	devel:libfreetype$secondaryArchSuffix
+	devel:libGL$secondaryArchSuffix
 	devel:libintl$secondaryArchSuffix
-	boost${secondaryArchSuffix}_devel
+	devel:libjpeg$secondaryArchSuffix
+	devel:libpng16$secondaryArchSuffix
+	devel:libSDL_1.2$secondaryArchSuffix
+	devel:libSDL_mixer_1.2$secondaryArchSuffix
+	devel:libSDL2_2.0$secondaryArchSuffix
+	devel:libSDL2_mixer_2.0$secondaryArchSuffix
+	devel:libz$secondaryArchSuffix
 	"
 BUILD_PREREQUIRES="
-	haiku${secondaryArchSuffix}_devel
+	cmd:cmake >= 3.0
 	cmd:gcc$secondaryArchSuffix
 	cmd:ld$secondaryArchSuffix
 	cmd:make
-	cmd:cmake >= 3.0
 	"
 
-SOURCE_DIR="plee-the-bear-0.7.0-light"
-PATCHES="plee_the_bear-$portVersion.patchset"
 BUILD()
 {
-	cmake . -DBEAR_EDITORS_ENABLED=FALSE -DCMAKE_INSTALL_PREFIX=$prefix -DCMAKE_CXX_FLAGS="-DNDEBUG"
-	make $jobArgs
+	cmake -Bbuild -S. -DCMAKE_BUILD_TYPE=Release \
+		-DBEAR_EDITORS_ENABLED=FALSE \
+		-DCMAKE_INSTALL_PREFIX=$prefix \
+		-DCMAKE_CXX_FLAGS="-DNDEBUG"
+	make -C build $jobArgs
 }
 
 INSTALL()
 {
-	make install
+	make -C build install
 	rm -r $prefix/share
 
 	addAppDeskbarSymlink $binDir/plee-the-bear "Plee the Bear"
 }
-
-# ----- DESCRIPTION -----------------------------------------------------------
-
-DESCRIPTION="Plee the Bear is a platform game in which you play an angry bear whose son has \
-been kidnapped by god. Here is a guy hard to brave! Jump in this amazing journey \
-to find and rescue your son. Because you want to rescue him, don't you? Or to \
-slap him? Maybe both…. \
-
-With three levels of the storyline and four mini-games, Plee the Bear \
-received very positive criticisms. The players loved the fun, the graphics and \
-the music; the community around the free software movement appreciated the \
-overall process and the quality of the resources, remarkable for a free game; \
-and the indie gaming community was pleasantly surprised by the technical skills \
-and the details of the game."

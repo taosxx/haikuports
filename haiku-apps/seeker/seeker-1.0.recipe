@@ -1,20 +1,22 @@
 SUMMARY="A file management program similar to Windows Explorer"
 DESCRIPTION="The goal for Seeker is to provide an alternate means of file \
 management, providing easy interaction with Tracker and Terminal. It's \
-currently quite useful as it is, and more features are planned for the future.
-"
+currently quite useful as it is, and more features are planned for the future."
 HOMEPAGE="https://github.com/HaikuArchives/Seeker"
-LICENSE="MIT"
 COPYRIGHT="DarkWyrm"
-SRC_URI="git+https://github.com/HaikuArchives/Seeker.git#f5241f9"
-REVISION="2"
-ARCHITECTURES="x86_gcc2 ?x86 ?x86_64"
+LICENSE="MIT"
+REVISION="7"
+srcGitRev="d88e5821185eab416590374f2de290a3c6fdc09f"
+SOURCE_URI="https://github.com/HaikuArchives/Seeker/archive/$srcGitRev.tar.gz"
+CHECKSUM_SHA256="9d200cf9e48eecdd838ec6a2c83fc4d45ef362b73cbddfcb6afcac1ae42c27e1"
+SOURCE_DIR="Seeker-$srcGitRev"
+
+ARCHITECTURES="all ?x86"
 
 PROVIDES="
 	seeker = $portVersion
 	app:Seeker = $portVersion
 	"
-
 REQUIRES="
 	haiku
 	lib:libsanta
@@ -23,12 +25,11 @@ REQUIRES="
 BUILD_REQUIRES="
 	devel:libsanta
 	"
-	
 BUILD_PREREQUIRES="
 	haiku_devel
 	makefile_engine
 	cmd:gcc
-    cmd:ld
+	cmd:ld
 	cmd:make
 	"
 
@@ -45,6 +46,6 @@ INSTALL()
 {
 	mkdir -p $appsDir
 	cp -a src/objects/Seeker $appsDir
-	
+
 	addAppDeskbarSymlink $appsDir/Seeker
 }

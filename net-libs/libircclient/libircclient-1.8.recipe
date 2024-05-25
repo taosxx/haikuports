@@ -1,19 +1,17 @@
 SUMMARY="An IRC client library"
-DESCRIPTION="
-libircclient is a library implementing the client-server IRC protocol.
-"
-HOMEPAGE="http://sourceforge.net/projects/libircclient/"
-COPYRIGHT="
-	2004-2012 George Yunaev
-	"
+DESCRIPTION="libircclient is a library implementing the client-server IRC protocol. \
+It is designed to be small, fast, portable and compatible with the RFC standards \
+as well as non-standard but popular features. It is perfect for building the IRC clients and bots."
+HOMEPAGE="https://sourceforge.net/projects/libircclient/"
+COPYRIGHT="2004-2012 George Yunaev"
 LICENSE="GNU LGPL v2"
-SRC_URI="http://downloads.sourceforge.net/project/libircclient/libircclient/$portVersion/libircclient-$portVersion.tar.gz"
+REVISION="6"
+SOURCE_URI="http://downloads.sourceforge.net/project/libircclient/libircclient/$portVersion/libircclient-$portVersion.tar.gz"
 CHECKSUM_SHA256="2cf8523ac683588f2785b08159a2df3e4d15939ee655c0024aa86334149de8f6"
-REVISION="1"
-ARCHITECTURES="x86_gcc2 x86 x86_64"
-SECONDARY_ARCHITECTURES="x86_gcc2 x86"
-
 PATCHES="libircclient-$portVersion.patchset"
+
+ARCHITECTURES="all"
+SECONDARY_ARCHITECTURES="x86_gcc2 x86"
 
 PROVIDES="
 	libircclient$secondaryArchSuffix = $portVersion compat >= 1
@@ -23,6 +21,15 @@ REQUIRES="
 	haiku$secondaryArchSuffix
 	lib:libssl$secondaryArchSuffix
 	"
+
+PROVIDES_devel="
+	libircclient${secondaryArchSuffix}_devel = $portVersion compat >= 1
+	devel:libircclient$secondaryArchSuffix = 1
+	"
+REQUIRES_devel="
+	libircclient$secondaryArchSuffix == $portVersion base
+	"
+
 BUILD_REQUIRES="
 	haiku${secondaryArchSuffix}_devel
 	devel:libssl$secondaryArchSuffix
@@ -43,27 +50,21 @@ BUILD()
 	autoreconf -f -i
 	runConfigure ./configure
 	make $jobArgs
-	cd src; make $jobArgs shared
+	cd src
+	make $jobArgs shared
 }
 
 INSTALL()
 {
 	make install
 
-	prepareInstalledDevelLibs libircclient
+	# remove static library
+	rm -f $libDir/libircclient.a
+
+	prepareInstalledDevelLib libircclient
 	fixPkgconfig
 
 	# devel package
 	packageEntries devel \
 		$developDir
 }
-
-# ----- devel package -------------------------------------------------------
-
-PROVIDES_devel="
-	libircclient${secondaryArchSuffix}_devel = $portVersion compat >= 1
-	devel:libircclient$secondaryArchSuffix = 1
-	"
-REQUIRES_devel="
-	libircclient$secondaryArchSuffix == $portVersion base
-	"

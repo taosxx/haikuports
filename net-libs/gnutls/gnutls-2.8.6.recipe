@@ -1,72 +1,81 @@
-SUMMARY="A TLS 1.0 and SSL 3.0 implementation for the GNU project" 
+SUMMARY="A TLS 1.0 and SSL 3.0 implementation for the GNU project"
 DESCRIPTION="GnuTLS is a secure communications library implementing the SSL, \
 TLS and DTLS protocols and technologies around them. It provides a simple C \
 language application programming interface (API) to access the secure \
 communications protocols as well as APIs to parse and write X.509, PKCS #12, \
 OpenPGP and other required structures. It is aimed to be portable and \
-efficient with focus on security and interoperability.
-"
+efficient with focus on security and interoperability."
 HOMEPAGE="http://www.gnutls.org/"
-SRC_URI="ftp://ftp.gnu.org/pub/gnu/gnutls/gnutls-2.8.6.tar.bz2"
+COPYRIGHT="2009-2010 Free Software Fundation Inc.
+	2004-2008 Simon Josefsson
+	2000-2004 Nikos Mavrogiannopoulos"
+LICENSE="GNU LGPL v2.1"
+REVISION="2"
+SOURCE_URI="ftp://ftp.gnu.org/pub/gnu/gnutls/gnutls-$portVersion.tar.bz2"
 CHECKSUM_SHA256="d6f846a7064af3ee2c9aebd65dcee76953b767170cbcd719e990ed6b9688a356"
-REVISION="1"
-ARCHITECTURES="x86_gcc2"
+PATCHES="gnutls-$portVersion.patch"
+
+ARCHITECTURES="?x86_gcc2"
 
 PROVIDES="
 	gnutls = $portVersion
+	lib:libgnutls = 26.14.12 compat = 26
+	lib:libgnutls_extra = 26.14.12 compat = 26
+	lib:libgnutls_openssl = 26.14.12 compat = 26
+	lib:libgnutlsxx = 26.14.12 compat = 26
+	"
+REQUIRES="
+	haiku
+	lib:libgcrypt
+	lib:libgpg_error
+	"
+
+PROVIDES_bin="
+	gnutls_bin = $portVersion
 	cmd:certtool
 	cmd:gnutls_cli
 	cmd:gnutls_cli_debug
 	cmd:gnutls_serv
 	cmd:psktool
 	cmd:srptool
-	lib:libgnutls_extra = 26.14.12 compat = 26
-	lib:libgnutls_openssl = 26.14.12 compat = 26
-	lib:libgnutls = 26.14.12 compat = 26
-	lib:libgnutlsxx = 26.14.12 compat = 26
-"
-
-REQUIRES="
+	"
+REQUIRES_bin="
+	gnutls == $portVersion base
 	haiku
 	lib:libgcrypt
 	lib:libgpg_error
-"
+	"
 
-BUILD_REQUIRES="
+PROVIDES_devel="
+	gnutls_devel = $portVersion
+	devel:libgnutls = 26.14.12 compat = 26
+	devel:libgnutls_extra = 26.14.12 compat = 26
+	devel:libgnutls_openssl = 26.14.12 compat = 26
+	devel:libgnutlsxx = 26.14.12 compat = 26
+	"
+REQUIRES_devel="
+	gnutls == $portVersion base
 	devel:libgcrypt
 	devel:libgpg_error
-"
+	"
 
-BUILD_PREREQUIRES="
+BUILD_REQUIRES="
 	haiku_devel
+	devel:libgcrypt
+	devel:libgpg_error
+	"
+BUILD_PREREQUIRES="
 	cmd:autoconf
 	cmd:automake
 	cmd:gcc
 	cmd:libtoolize
 	cmd:make
-"
-
-PROVIDES_devel="
-	gnutls_devel = $portVersion
-	devel:libgnutls_extra = 26.14.12 compat = 26
-	devel:libgnutls_openssl = 26.14.12 compat = 26
-	devel:libgnutls = 26.14.12 compat = 26
-	devel:libgnutlsxx = 26.14.12 compat = 26
-"
-
-REQUIRES_devel="
-	gnutls == $portVersion base
-"
-
-LICENSE="GNU LGPL v2.1"
-COPYRIGHT="2009-2010 Free Software Fundation Inc.
-		2004-2008 Simon Josefsson
-		2000-2004 Nikos Mavrogiannopoulos"
+	"
 
 BUILD()
 {
 	libtoolize --force --copy --install
-    cd lib
+	cd lib
 		libtoolize --force --copy --install
 	cd ..
 	cd libextra
@@ -81,10 +90,23 @@ INSTALL()
 {
 	make install
 
-	prepareInstalledDevelLibs libgnutls-extra libgnutls-openssl libgnutls libgnutlsxx
+	rm -f $libDir/lib*.la
+
+	prepareInstalledDevelLibs \
+		libgnutls-extra \
+		libgnutls-openssl \
+		libgnutls \
+		libgnutlsxx
+
 	fixPkgconfig
 
-	packageEntries devel $developDir
+	packageEntries devel \
+		$developDir \
+		$manDir/man3
+
+	packageEntries bin \
+		$binDir \
+		$documentationDir
 }
 
 TEST()

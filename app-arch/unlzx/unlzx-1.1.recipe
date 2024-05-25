@@ -1,16 +1,23 @@
-SUMMARY="Decompresses LZX archives on multiple platforms" 
+SUMMARY="Decompresses LZX archives on multiple platforms"
 DESCRIPTION="LZX is the name of an LZ77 family compression algorithm invented \
 by Johnathon Forbes and Tomi Poutanen. unlzx is a program designed to extract \
 these archives."
-HOMEPAGE="http://aminet.net/package/misc/unix/unlzx.c.gz" 
-SRC_URI="git+https://github.com/tweakdeveloper/unlzx.git#36a85e7"
-ADDITIONAL_FILES="unlzx-expander-rules"
-REVISION="3"
-LICENSE="Public Domain"
+HOMEPAGE="http://aminet.net/package/misc/unix/unlzx.c.gz"
 COPYRIGHT="2001 Erik Meusel"
+LICENSE="Public Domain"
+REVISION="4"
+srcGitRev="36a85e75eb8ef9a9ca2191cc275ff7d20def16ec"
+SOURCE_URI="https://github.com/tweakdeveloper/unlzx/archive/$srcGitRev.tar.gz"
+CHECKSUM_SHA256="472f38164768989657cd57ef759624de5331ef7033f8723023ed67f520648eb5"
+SOURCE_DIR="unlzx-$srcGitRev"
+ADDITIONAL_FILES="unlzx-expander-rules"
 
 ARCHITECTURES="x86_gcc2 x86"
 
+PROVIDES="
+	unlzx = $portVersion
+	cmd:unlzx
+	"
 REQUIRES="
 	haiku
 	"
@@ -20,12 +27,7 @@ BUILD_REQUIRES="
 	cmd:gcc
 	cmd:strip
 	"
-              
-PROVIDES="
-	unlzx = $portVersion
-	cmd:unlzx
-	"
-              
+
 BUILD()
 {
 	gcc unlzx.c -o unlzx

@@ -1,37 +1,49 @@
-SUMMARY="Schroedinger Dirac Video codec"
-DESCRIPTION="
-Schroedinger (or "schro" for short) is an implementation of the \
-Dirac and SMPTE VC-2 video compression specification.  Dirac was \
-developed by BBC Research & Development (http://www.bbc.co.uk/rd/) \
-as an open technology with open licensing.
-Schroedinger is the C library implementing video encoding and \
-decoding.  Most end users will want to use an application that \
-uses the Schroedinger library for encoding and decoding Dirac \
-streams.  A few such applications are Totem, VLC, and Mplayer. \
-In addition, media frameworks such as GStreamer and decoding \
-libraries such as ffmpeg can be configured to use Schroedinger \
-either internally or via plugins.
-"
-HOMEPAGE="http://www.diracvideo.org"
-COPYRIGHT="
-	2006 BBC and Fluendo"
-LICENSE="MIT"
-SRC_URI="http://diracvideo.org/download/schroedinger/schroedinger-$portVersion.tar.gz"
-CHECKSUM_SHA256="1e572a0735b92aca5746c4528f9bebd35aa0ccf8619b22fa2756137a8cc9f912"
-REVISION="1"
-ARCHITECTURES="x86_gcc2 x86 x86_64"
-SECONDARY_ARCHITECTURES="x86_gcc2 x86"
+SUMMARY="An implementation of the Dirac video codec"
+DESCRIPTION="Schroedinger (or "schro" for short) is an implementation of the \
+Dirac and SMPTE VC-2 video compression specification.  Dirac was developed \
+by BBC Research & Development (http://www.bbc.co.uk/rd/) as an open \
+technology with open licensing.
 
+Schroedinger is the C library implementing video encoding and decoding. \
+Most end users will want to use an application that uses the Schroedinger \
+library for encoding and decoding Dirac streams.  A few such applications \
+are Totem, VLC, and Mplayer.
+
+In addition, media frameworks such as GStreamer and decoding libraries such \
+as ffmpeg can be configured to use Schroedinger either internally or via \
+plugins."
+HOMEPAGE="http://www.diracvideo.org"
+COPYRIGHT="2006 BBC and Fluendo"
+LICENSE="MIT"
+REVISION="7"
+SOURCE_URI="https://launchpad.net/schroedinger/trunk/$portVersion/+download/schroedinger-$portVersion.tar.gz"
+CHECKSUM_SHA256="1e572a0735b92aca5746c4528f9bebd35aa0ccf8619b22fa2756137a8cc9f912"
 PATCHES="schroedinger-$portVersion.patchset"
+
+ARCHITECTURES="all !x86_gcc2"
+SECONDARY_ARCHITECTURES="x86"
+
+libVersion="0.11.0"
+libVersionCompat="$libVersion compat >= ${libVersion%%.*}"
 
 PROVIDES="
 	schroedinger$secondaryArchSuffix = $portVersion compat >= 1.0
-	lib:libschroedinger_1.0$secondaryArchSuffix = 0.11.0 compat >= 0
+	lib:libschroedinger_1.0$secondaryArchSuffix = $libVersionCompat
 	"
 REQUIRES="
 	haiku$secondaryArchSuffix
 	lib:liborc_0.4$secondaryArchSuffix
 	"
+
+PROVIDES_devel="
+	schroedinger${secondaryArchSuffix}_devel = $portVersion compat >= 1.0
+	devel:libschroedinger_1.0$secondaryArchSuffix = $libVersionCompat
+	"
+REQUIRES_devel="
+	schroedinger$secondaryArchSuffix == $portVersion base
+	devel:liborc_0.4$secondaryArchSuffix
+	"
+
 BUILD_REQUIRES="
 	haiku${secondaryArchSuffix}_devel
 	devel:liborc_0.4$secondaryArchSuffix
@@ -41,8 +53,9 @@ BUILD_PREREQUIRES="
 	cmd:autoconf
 	cmd:automake
 	cmd:gcc$secondaryArchSuffix
+	cmd:gtkdocize
 	cmd:ld$secondaryArchSuffix
-	cmd:libtoolize
+	cmd:libtoolize$secondaryArchSuffix
 	cmd:make
 	cmd:pkg_config$secondaryArchSuffix
 	"
@@ -50,7 +63,7 @@ BUILD_PREREQUIRES="
 BUILD()
 {
 	autoreconf -f -i -I m4
-	runConfigure ./configure
+	runConfigure ./configure --disable-static
 	make $jobArgs
 }
 
@@ -58,20 +71,17 @@ INSTALL()
 {
 	make install
 
-	prepareInstalledDevelLibs libschroedinger-1.0
+	# remove libtool file
+	rm -f $libDir/libschroedinger-1.0.la
+
+	mv $includeDir/schroedinger-1.0/schroedinger $includeDir/schroedinger
+	rm -rf $includeDir/schroedinger-1.0
+
+	prepareInstalledDevelLib libschroedinger-1.0
 	fixPkgconfig
 
 	# devel package
 	packageEntries devel \
-		$developDir
+		$developDir \
+		$dataDir
 }
-
-# ----- devel package -------------------------------------------------------
-
-PROVIDES_devel="
-	schroedinger${secondaryArchSuffix}_devel = $portVersion compat >= 1.0
-	devel:libschroedinger_1.0$secondaryArchSuffix = 0.11.0 compat >= 0
-	"
-REQUIRES_devel="
-	schroedinger$secondaryArchSuffix == $portVersion base
-	"

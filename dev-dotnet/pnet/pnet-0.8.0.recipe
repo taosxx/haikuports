@@ -1,26 +1,26 @@
 SUMMARY="DotGNU Portable .NET suite"
 DESCRIPTION="DotGNU Portable.NET is a portable suite of tools (including a C# \
 compiler, assembler, and runtime engine) for non-Microsoft platforms.  It is \
-part of the DotGNU meta-project" 
-HOMEPAGE="http://www.dotgnu.org/pnet.html" 
-SRC_URI="http://download.savannah.gnu.org/releases/dotgnu-pnet/pnet-0.8.0.tar.gz"
-CHECKSUM_SHA256="f1340ae3567a5f05729d9d201bd719268ceca07bde4f62c58a92abfda64551bb"
-REVISION="1"
-LICENSE="GNU GPL v1"
+part of the DotGNU meta-project"
+HOMEPAGE="http://www.dotgnu.org/pnet.html"
 COPYRIGHT="2001-2006 Southern Storm Software, Pty Ltd.
 	1984-2002 Free Software Foundation, Inc.
 	2003 Gopal.V
 	2002 FSF INDIA
-	2002 Richard Baumann
-	"
-ARCHITECTURES="x86_gcc2 x86 ?x86_64"
+	2002 Richard Baumann"
+LICENSE="GNU GPL v1"
+REVISION="4"
+SOURCE_URI="http://download.savannah.gnu.org/releases/dotgnu-pnet/pnet-0.8.0.tar.gz"
+CHECKSUM_SHA256="f1340ae3567a5f05729d9d201bd719268ceca07bde4f62c58a92abfda64551bb"
+PATCHES="pnet-0.8.0.patchset"
+
+ARCHITECTURES="?all x86_gcc2 x86"
 
 PROVIDES="
 	pnet = $portVersion
-	lib:libpnet = $portVersion
 	cmd:al
 	cmd:cli_unknown_ar
-    cmd:cli_unknown_cpp
+	cmd:cli_unknown_cpp
 	cmd:cli_unknown_gcc
 	cmd:cli_unknown_ranlib
 	cmd:cli_unknown_size
@@ -48,9 +48,16 @@ PROVIDES="
 	cmd:ilstrip
 	cmd:ilverify
 	cmd:resgen
+	lib:libpnet = $portVersion
+	"
+REQUIRES="
+	haiku
+	lib:libncurses
+	lib:libz
 	"
 
 PROVIDES_devel="
+	pnet_devel = $portVersion
 	devel:libILAsm = $portVersion compat >= 0
 	devel:libILCodeGen = $portVersion compat >= 0
 	devel:libILDumpAsm = $portVersion compat >= 0
@@ -59,33 +66,26 @@ PROVIDES_devel="
 	devel:libILLink = $portVersion compat >= 0
 	devel:libILSupport = $portVersion compat >= 0
 	"
-
-REQUIRES="
-	haiku
-	lib:libncurses
-	lib:zlib
+REQUIRES_devel="
 	"
 
 BUILD_REQUIRES="
 	haiku_devel
 	devel:libncurses
 	"
-
 BUILD_PREREQUIRES="
-	cmd:gcc
-	cmd:make
-	cmd:ld
-	cmd:find
-	cmd:flex
-	cmd:awk
-	cmd:libtoolize
 	cmd:aclocal
 	cmd:autoconf
 	cmd:autoconf
+	cmd:awk
+	cmd:find
+	cmd:flex
+	cmd:gcc
+	cmd:ld
+	cmd:libtoolize
+	cmd:make
 	cmd:treecc
 	"
-
-PATCHES="pnet-0.8.0.patchset"
 
 BUILD()
 {
@@ -101,7 +101,7 @@ BUILD()
 INSTALL()
 {
 	make install
-	
+
 	packageEntries devel \
 		$developDir \
 		$manDir

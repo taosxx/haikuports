@@ -1,26 +1,19 @@
 SUMMARY="An audio meta-data library"
-DESCRIPTION="
-TagLib is a free library written in C++ for reading and editing \
+DESCRIPTION="TagLib is a free library written in C++ for reading and editing \
 metadata that has been embedded into audio files. It is able to read and \
 edit all relevant metadata formats for audio files, including APEv2, ID3 and \
 Vorbis. It can find tags in multiple formats such as .mp3 .wma .wav .m4a \
 .flac etc. TagLib is platform independent."
-HOMEPAGE="http://github.com/taglib" 
-SRC_URI="http://taglib.github.io/releases/taglib-1.9.1.tar.gz" 
-CHECKSUM_SHA256="72d371cd1419a87ae200447a53bff2be219283071e80fd12337928cc967dc71a"
+HOMEPAGE="https://github.com/taglib"
 COPYRIGHT="2002-2013 Scott Wheeler"
-LICENSE="
-	GNU LGPL v2
-	MPL v1.1
-	"
-REVISION="2"
+LICENSE="GNU LGPL v2
+	MPL v1.1"
+REVISION="3"
+SOURCE_URI="http://taglib.github.io/releases/taglib-1.9.1.tar.gz"
+CHECKSUM_SHA256="72d371cd1419a87ae200447a53bff2be219283071e80fd12337928cc967dc71a"
+PATCHES="taglib-1.9.1.patchset"
 
-ARCHITECTURES="x86 x86_64"
-if [ $effectiveTargetArchitecture != x86_gcc2 ]; then
-	# x86_gcc2 is fine as primary target architecture as long as we're building
-	# for a different secondary architecture.
-	ARCHITECTURES="$ARCHITECTURES x86_gcc2"
-fi
+ARCHITECTURES="all !x86_gcc2"
 SECONDARY_ARCHITECTURES="x86"
 
 PROVIDES="
@@ -31,22 +24,30 @@ PROVIDES="
 	"
 REQUIRES="
 	haiku$secondaryArchSuffix
-	lib:libstdc++$secondaryArchSuffix
 	lib:libz$secondaryArchSuffix
 	"
+
+PROVIDES_devel="
+	taglib${secondaryArchSuffix}_devel = $portVersion compat >= 1.9
+	cmd:taglib_config$secondaryArchSuffix = $portVersion compat >= 1.9
+	devel:libtag$secondaryArchSuffix = 1.14.0 compat >= 1
+	devel:libtag_c$secondaryArchSuffix = 0.0.0 compat >= 0
+	"
+REQUIRES_devel="
+	taglib$secondaryArchSuffix == $portVersion base
+	"
+
 BUILD_REQUIRES="
+	haiku${secondaryArchSuffix}_devel
 	devel:libz$secondaryArchSuffix
 	"
 BUILD_PREREQUIRES="
-	haiku${secondaryArchSuffix}_devel
-	cmd:gcc$secondaryArchSuffix
 	cmd:cmake
+	cmd:gcc$secondaryArchSuffix
+	cmd:grep
 	cmd:make
 	cmd:sed
-	cmd:grep
 	"
-
-PATCHES="taglib-1.9.1.patchset"
 
 BUILD()
 {
@@ -67,22 +68,12 @@ INSTALL()
 			libtag_c
 
 	fixPkgconfig
-	
+
 	fixDevelopLibDirReferences $binDir/taglib-config
 	sed -i -e "s,\/.*/include,$includeDir," $binDir/taglib-config
-	
+
 	# devel package
 	packageEntries devel \
 		$developDir \
 		$binDir
 }
-
-PROVIDES_devel="
-	taglib${secondaryArchSuffix}_devel = $portVersion compat >= 1.9
-	cmd:taglib_config$secondaryArchSuffix = $portVersion compat >= 1.9
-	devel:libtag$secondaryArchSuffix = 1.14.0 compat >= 1
-	devel:libtag_c$secondaryArchSuffix = 0.0.0 compat >= 0
-	"
-REQUIRES_devel="
-	taglib$secondaryArchSuffix == $portVersion base
-	"

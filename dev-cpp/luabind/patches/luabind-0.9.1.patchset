@@ -1,0 +1,73 @@
+From f0645dbfc26638759634fd55ace2b5052b1ccdf3 Mon Sep 17 00:00:00 2001
+From: robxnano <89391914+robxnano@users.noreply.github.com>
+Date: Fri, 3 Mar 2023 15:03:51 +0000
+Subject: [PATCH] Hack in Haiku support in Jamroot (updated)
+
+---
+ Jamroot | 15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
+
+diff --git a/Jamroot b/Jamroot
+index 94494bf..f20e57e 100755
+--- a/Jamroot
++++ b/Jamroot
+@@ -112,6 +112,21 @@ else if [ os.name ] in LINUX MACOSX FREEBSD
+     }
+     lib lua : m dl : <name>$(lib-name) <search>$(library:D) : : <include>$(includes) ;
+ }
++if [ os.name ] = HAIKU
++{
++    if [ os.environ HAIKU_ARCH ] = "x86"
++    {
++        includes = /boot/system/develop/headers/x86/lua5.1 ;
++        library = /boot/system/lib/x86/liblua.so.5.1 ;
++    }
++    else
++    {
++        includes = /boot/system/develop/headers/lua5.1 ;
++        library = /boot/system/lib/liblua.so.5.1 ;
++    }
++    lib-name = lua ;
++    lib lua : : <name>$(lib-name) <search>$(library:D) : : <include>$(includes) ;
++}
+ 
+ rule tag-names ( name : type ? : property-set )
+ {
+-- 
+2.37.3
+
+
+From adccca31f5bb3b37c9e3d23cc006971e181e6f91 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Ga=C3=ABtan=20Lehmann?= <gaetan.lehmann@gmail.com>
+Date: Sun, 4 Jan 2015 14:02:23 +0100
+Subject: fix build with boost 1.57
+
+this is the fix applied in homebrew and in
+
+  https://github.com/luabind/luabind/issues/27
+
+diff --git a/luabind/object.hpp b/luabind/object.hpp
+index f7b7ca5..ff99043 100644
+--- a/luabind/object.hpp
++++ b/luabind/object.hpp
+@@ -536,6 +536,8 @@ namespace detail
+       handle m_key;
+   };
+ 
++#if BOOST_VERSION < 105700
++
+ // Needed because of some strange ADL issues.
+ 
+ #define LUABIND_OPERATOR_ADL_WKND(op) \
+@@ -557,6 +559,8 @@ namespace detail
+   LUABIND_OPERATOR_ADL_WKND(!=)
+ 
+ #undef LUABIND_OPERATOR_ADL_WKND
++
++#endif // BOOST_VERSION < 105700
+  
+ } // namespace detail
+ 
+-- 
+2.16.1
+

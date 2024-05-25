@@ -1,19 +1,16 @@
 SUMMARY="Lightweight PNG C library"
-DESCRIPTION="
-pnglite is a small and simple library for loading and writing PNG images.
-"
-HOMEPAGE="http://sourceforge.net/projects/pnglite"
-COPYRIGHT="
-	2007 Daniel Karling
-	"
+DESCRIPTION="pnglite is a small and simple library for loading and writing PNG images. \
+It was created as a substitute for libpng in situations when libpng is more than enough."
+HOMEPAGE="https://sourceforge.net/projects/pnglite"
+COPYRIGHT="2007 Daniel Karling"
 LICENSE="Zlib"
-SRC_URI="http://prdownloads.sourceforge.net/pnglite/pnglite-$portVersion.zip"
+REVISION="4"
+SOURCE_URI="http://prdownloads.sourceforge.net/pnglite/pnglite-$portVersion.zip"
 CHECKSUM_SHA256="6444b13b9ec5b6f9de8f72513a00870325779e3b05bfcf554edb1ab0c90f5962"
-REVISION="1"
-ARCHITECTURES="x86_gcc2 x86 x86_64"
-SECONDARY_ARCHITECTURES="x86_gcc2 x86"
-
 SOURCE_DIR=""
+
+ARCHITECTURES="all"
+SECONDARY_ARCHITECTURES="x86"
 
 PROVIDES="
 	pnglite$secondaryArchSuffix = $portVersion
@@ -23,6 +20,15 @@ REQUIRES="
 	haiku$secondaryArchSuffix
 	lib:libz$secondaryArchSuffix
 	"
+
+PROVIDES_devel="
+	pnglite${secondaryArchSuffix}_devel = $portVersion
+	devel:libpnglite$secondaryArchSuffix = $portVersion
+	"
+REQUIRES_devel="
+	pnglite$secondaryArchSuffix == $portVersion base
+	"
+
 BUILD_REQUIRES="
 	haiku${secondaryArchSuffix}_devel
 	devel:libz$secondaryArchSuffix >= 1.0.4
@@ -48,20 +54,11 @@ INSTALL()
 	mkdir -p $includeDir $libDir
 	cp pnglite.h $includeDir/
 	cp libpnglite.so.0 $libDir/
-	
+	ln -sr $libDir/libpnglite.so.0 $libDir/libpnglite.so
+
 	prepareInstalledDevelLibs libpnglite
-	
+
 	# devel package
 	packageEntries devel \
-		$developDir	
+		$developDir
 }
-
-# ----- devel package -------------------------------------------------------
-
-PROVIDES_devel="
-	pnglite${secondaryArchSuffix}_devel = $portVersion
-	devel:libpnglite$secondaryArchSuffix = $portVersion
-	"
-REQUIRES_devel="
-	pnglite$secondaryArchSuffix == $portVersion base
-	"

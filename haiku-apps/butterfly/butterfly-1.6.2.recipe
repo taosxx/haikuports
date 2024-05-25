@@ -2,32 +2,33 @@ SUMMARY="A picture browser based on the translators"
 DESCRIPTION="
 Butterfly is a picture browser based on the translators for displaying
 bitmap images. It was inspired by Sea, a DOS picture browser.
-Its aim is to allow easy and fast browsing of an important number of pictures.
-"
+Its aim is to allow easy and fast browsing of an important number of pictures."
 HOMEPAGE="http://oxben.free.fr/butterfly/Butterfly.html"
-SRC_URI="git://github.com/HaikuArchives/Butterfly#bbd853ecae91e7c1fd3e5e4339f872cdf379b60e"
 COPYRIGHT="2006 Thomas Thery"
 LICENSE="MIT"
-REVISION="1"
+REVISION="2"
+srcGitRev="45a5b62963e26386b22ce79f8a9f92256daa7a88"
+SOURCE_URI="https://github.com/HaikuArchives/Butterfly/archive/$srcGitRev.tar.gz"
+CHECKSUM_SHA256="19d39b4c24539a85d64868bbcc874eac99a51a2c66d48b890edcd1e3f91a41d1"
+SOURCE_DIR="Butterfly-$srcGitRev"
 
-ARCHITECTURES="x86_gcc2 x86 ?x86_64"
-SECONDARY_ARCHITECTURES="x86_gcc2 x86"
+ARCHITECTURES="all"
 
 PROVIDES="
-	butterfly$secondaryArchSuffix = $portVersion
+	butterfly = $portVersion
 	app:Butterfly = $portVersion
 	"
 REQUIRES="
 	haiku
 	"
+
 BUILD_REQUIRES="
-	haiku${secondaryArchSuffix}_devel
+	haiku_devel
 	"
 BUILD_PREREQUIRES="
 	makefile_engine
-	cmd:gcc$secondaryArchSuffix
+	cmd:gcc
 	cmd:make
-	cmd:mkdepend
 	"
 
 BUILD()

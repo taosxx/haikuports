@@ -1,0 +1,167 @@
+SUMMARY="The Hardware Locality library"
+DESCRIPTION="The Hardware Locality (hwloc) software project aims at easing the \
+process of discovering hardware resources in parallel architectures. It offers \
+command-line tools and a C API for consulting these resources, their locality, \
+attributes, and interconnection. hwloc primarily aims at helping \
+high-performance computing (HPC) applications, but is also applicable to any \
+project seeking to exploit code and/or data locality on modern computing \
+platforms."
+HOMEPAGE="https://www.open-mpi.org/projects/hwloc/"
+COPYRIGHT="2004-2006 The Trustees of Indiana University and Indiana University \
+Research and Technology Corporation
+	2004-2005 The University of Tennessee and The University of Tennessee \
+Research Foundation
+	2004-2005 High Performance Computing Center Stuttgart, University of \
+Stuttgart
+	2004-2005 The Regents of the University of California
+	2009      CNRS
+	2009-2017 Inria
+	2009-2015 University of Bordeaux
+	2009-2015 Cisco Systems, Inc.
+	2009-2012 Oracle and/or its affiliates
+	2010      IBM
+	2010      Jirka Hladky
+	2012      Aleksej Saushev, The NetBSD Foundation
+	2012      Blue Brain Project, EPFL
+	2015      Research Organization for Information Science and Technology \
+(RIST)
+	2015-2016 Intel, Inc."
+LICENSE="BSD (3-clause)"
+REVISION="3"
+SOURCE_URI="https://www.open-mpi.org/software/hwloc/v1.11/downloads/hwloc-$portVersion.tar.bz2"
+CHECKSUM_SHA256="16a061cabd9319eb8cf9c6705c79142520b5b38d28a3f2a1d832bcb2fb7ea5fd"
+PATCHES="hwloc-$portVersion.patchset"
+
+ARCHITECTURES="all !x86_gcc2"
+SECONDARY_ARCHITECTURES="x86"
+
+commandSuffix=$secondaryArchSuffix
+commandBinDir=$binDir
+if [ "$targetArchitecture" = x86_gcc2 ]; then
+	commandSuffix=
+	commandBinDir=$prefix/bin
+fi
+
+libVersion="5.7.8"
+libVersionCompat="$libVersion compat >= ${libVersion%%.*}"
+
+PROVIDES="
+	hwloc$secondaryArchSuffix = $portVersion
+	lib:libhwloc$secondaryArchSuffix = $libVersionCompat
+	"
+REQUIRES="
+	haiku$secondaryArchSuffix
+	lib:libltdl$secondaryArchSuffix
+	lib:libxml2$secondaryArchSuffix
+	"
+
+PROVIDES_devel="
+	hwloc${secondaryArchSuffix}_devel = $portVersion
+	devel:libhwloc$secondaryArchSuffix = $libVersion
+	"
+REQUIRES_devel="
+	hwloc$secondaryArchSuffix == $portVersion base
+	"
+CONFLICTS_devel="
+	hwloc2${secondaryArchSuffix}_devel
+	"
+
+PROVIDES_tools="
+	hwloc${secondaryArchSuffix}_tools = $portVersion
+	cmd:hwloc_annotate$commandSuffix = $portVersion
+	cmd:hwloc_assembler$commandSuffix = $portVersion
+	cmd:hwloc_assembler_remote$commandSuffix = $portVersion
+	cmd:hwloc_bind$commandSuffix = $portVersion
+	cmd:hwloc_calc$commandSuffix = $portVersion
+	cmd:hwloc_compress_dir$commandSuffix = $portVersion
+	cmd:hwloc_diff$commandSuffix = $portVersion
+	cmd:hwloc_distances$commandSuffix = $portVersion
+	cmd:hwloc_distrib$commandSuffix = $portVersion
+#	cmd:hwloc_dump_hwdata$commandSuffix = $portVersion
+#	cmd:hwloc_gather_topology$commandSuffix = $portVersion
+	cmd:hwloc_info$commandSuffix = $portVersion
+	cmd:hwloc_ls$commandSuffix = $portVersion
+	cmd:hwloc_patch$commandSuffix = $portVersion
+	cmd:hwloc_ps$commandSuffix = $portVersion
+	cmd:lstopo$commandSuffix = $portVersion
+	cmd:lstopo_no_graphics$commandSuffix = $portVersion
+	"
+REQUIRES_tools="
+	hwloc$secondaryArchSuffix == $portVersion base
+	$REQUIRES
+	"
+CONFLICTS_tools="
+	hwloc2${secondaryArchSuffix}_tools
+	"
+
+BUILD_REQUIRES="
+	haiku${secondaryArchSuffix}_devel
+	devel:libxml2$secondaryArchSuffix
+	"
+BUILD_PREREQUIRES="
+	cmd:aclocal
+	cmd:autoconf
+	cmd:autom4te
+	cmd:automake
+	cmd:gcc$secondaryArchSuffix
+	cmd:grep
+	cmd:ld$secondaryArchSuffix
+	cmd:libtoolize$secondaryArchSuffix
+	cmd:make
+	cmd:pkg_config$secondaryArchSuffix
+	cmd:sed
+	"
+
+defineDebugInfoPackage hwloc$secondaryArchSuffix \
+	$libDir/hwloc/hwloc_xml_libxml.so \
+	$libDir/libhwloc.so.$libVersion \
+	"$(getPackagePrefix tools)"/bin/hwloc-annotate \
+	"$(getPackagePrefix tools)"/bin/hwloc-assembler \
+	"$(getPackagePrefix tools)"/bin/hwloc-bind \
+	"$(getPackagePrefix tools)"/bin/hwloc-calc \
+	"$(getPackagePrefix tools)"/bin/hwloc-diff \
+	"$(getPackagePrefix tools)"/bin/hwloc-distances \
+	"$(getPackagePrefix tools)"/bin/hwloc-distrib \
+	"$(getPackagePrefix tools)"/bin/hwloc-info \
+	"$(getPackagePrefix tools)"/bin/hwloc-patch \
+	"$(getPackagePrefix tools)"/bin/hwloc-ps \
+	"$(getPackagePrefix tools)"/bin/lstopo-no-graphics
+
+BUILD()
+{
+	autoreconf -vfi
+
+	LDFLAGS="-lnetwork" \
+	runConfigure --omit-dirs "binDir sbinDir" ./configure \
+		--sbindir=$commandBinDir \
+		--enable-plugins
+	make $jobArgs
+}
+
+INSTALL()
+{
+	install -d $docDir
+
+	make install
+	rm -f $libDir/hwloc/*.la
+	rm -f $libDir/libhwloc.la
+
+	prepareInstalledDevelLib libhwloc
+	fixPkgconfig
+
+	packageEntries devel \
+		$developDir \
+		$docDir/hwloc-*.pdf \
+		$manDir/man3
+
+	packageEntries tools \
+		$commandBinDir
+
+	install -t $docDir AUTHORS COPYING README
+}
+
+TEST()
+{
+	export LIBRARY_PATH=$LIBRARY_PATH:$sourceDir/hwloc/.libs
+	make check
+}

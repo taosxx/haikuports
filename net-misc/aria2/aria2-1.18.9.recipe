@@ -7,23 +7,16 @@ bandwidth. It supports downloading a file from HTTP(S)/FTP and \
 BitTorrent at the same time, while the data downloaded from \
 HTTP(S)/FTP is uploaded to the BitTorrent swarm. Using Metalink's \
 chunk checksums, aria2 automatically validates chunks of data while \
-downloading a file like BitTorrent.
-"
+downloading a file like BitTorrent."
 HOMEPAGE="http://aria2.sourceforge.net"
-LICENSE="GNU GPL v2"
 COPYRIGHT="2006-2014 Tatsuhiro Tsujikawa"
-SRC_URI="http://sourceforge.net/projects/aria2/files/stable/aria2-$portVersion/aria2-$portVersion.tar.xz"
+LICENSE="GNU GPL v2"
+REVISION="3"
+SOURCE_URI="http://sourceforge.net/projects/aria2/files/stable/aria2-$portVersion/aria2-$portVersion.tar.xz"
 CHECKSUM_SHA256="4a7be62cac075e4ad14c91dd4ab9f22afe6e21507255142c20de252e15a7b1e7"
-REVISION="1"
-
 PATCHES="aria2-$portVersion.patchset"
 
-ARCHITECTURES="x86 x86_64"
-if [ $effectiveTargetArchitecture != x86_gcc2 ]; then
-	# x86_gcc2 is fine as primary target architecture as long as we're building
-	# for a different secondary architecture.
-	ARCHITECTURES="$ARCHITECTURES x86_gcc2"
-fi
+ARCHITECTURES="all !x86_gcc2"
 SECONDARY_ARCHITECTURES="x86"
 
 PROVIDES="
@@ -33,10 +26,12 @@ PROVIDES="
 REQUIRES="
 	haiku$secondaryArchSuffix
 	lib:libiconv$secondaryArchSuffix
+	lib:libintl$secondaryArchSuffix
 	lib:libssl$secondaryArchSuffix
 	lib:libxml2$secondaryArchSuffix
 	lib:libz$secondaryArchSuffix
 	"
+
 BUILD_REQUIRES="
 	devel:libiconv$secondaryArchSuffix
 	devel:libssl$secondaryArchSuffix
@@ -48,19 +43,19 @@ BUILD_PREREQUIRES="
 	cmd:aclocal
 	cmd:autoconf
 	cmd:automake
+	cmd:find
 	cmd:gcc$secondaryArchSuffix
+	cmd:gettext
 	cmd:ld$secondaryArchSuffix
 	cmd:libtoolize
 	cmd:make
 	cmd:pkg_config$secondaryArchSuffix
-	cmd:gettext
-	cmd:find
 	"
 
 BUILD()
 {
 	autoreconf -fi
-	runConfigure ./configure
+	CPPFLAGS="-D_BSD_SOURCE" runConfigure ./configure
 	make $jobArgs
 }
 

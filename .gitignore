@@ -1,4 +1,7 @@
-packages
-repository
-*/*/download
-*/*/work-*
+/haikuports.conf
+/buildmaster
+/packages
+/repository
+/repository-*
+/*/*/download
+/*/*/work-*

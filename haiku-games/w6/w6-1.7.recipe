@@ -4,18 +4,18 @@ with every single country on this planet including Swaziland (great hello to \
 all of you Swaziland BeOS users). It has real data for every country in the \
 world (at least in the 70's), including population, PNB etc.
 Using the editor, you can let the computer play alone and turn it in kind of \
-war simulation software.
-"
-HOMEPAGE="http://lema.link-u.com/be/"
-SRC_URI="http://lema.link-u.com/be/W6Haiku.zip"
-CHECKSUM_SHA256="6393cb0f4d31728d575ccfc70d5c40153c610024163487d2e46b8db4e8aa3c58"
-SRC_URI_2="http://lema.link-u.com/be/W6forR5-with-sources.zip"
-CHECKSUM_SHA256_2="0e12d3a80d668a6d86c4d2ea67aa1c18d7ece5f218d2512b36f96cdf3071bbdf"
-REVISION="1"
-LICENSE="Public Domain"
+war simulation software."
+HOMEPAGE="https://github.com/HaikuArchives/W6/"
 COPYRIGHT="1998-1999 Santiago Lema"
+LICENSE="MIT"
+REVISION="4"
+srcGitRev="b1940f137e20efee91c0ae060509b7b8507a9159"
+SOURCE_URI="https://github.com/HaikuArchives/W6/archive/$srcGitRev.tar.gz"
+CHECKSUM_SHA256="9a1a39307e3aa67d354af3603c1636cdfc14c22f7f7ed76f97a178112c3f08a0"
+SOURCE_FILENAME="W6-$portVersion-$srcGitRev-tar.gz"
+SOURCE_DIR="W6-$srcGitRev"
 
-ARCHITECTURES="x86_gcc2 ?x86 ?x86_64"
+ARCHITECTURES="all ?x86"
 
 PROVIDES="
 	w6 = $portVersion
@@ -23,34 +23,30 @@ PROVIDES="
 	"
 REQUIRES="
 	haiku
+	lib:libpng16
 	"
+
 BUILD_REQUIRES="
 	haiku_devel
+	devel:libpng
 	"
 BUILD_PREREQUIRES="
 	makefile_engine
-	cmd:make
 	cmd:gcc
+	cmd:make
 	"
-
-SOURCE_DIR="W6Haiku"
-SOURCE_DIR_2="W6"
-
-PATCHES="w6-1.7.patch"
 
 BUILD()
 {
+	cd sources
 	make $jobArgs
 }
 
 INSTALL()
 {
-	ARCHITECTURE=$(echo $buildArchitecture | sed 's/_/-/g')
-	
 	APPDIR=$appsDir/W6
 	mkdir -p $APPDIR
-	cp -a objects.$ARCHITECTURE-release/W6Haiku $APPDIR/W6
-	cp -r $sourceDir2/w6s $APPDIR
-	cp -r $sourceDir2/help $APPDIR
+
+	cp -r dist/* $APPDIR/
 	addAppDeskbarSymlink $APPDIR/W6
 }

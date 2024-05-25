@@ -1,29 +1,23 @@
-SUMMARY="RXTX is a native serial library for java serial communication that runs on many OS."
-DESCRIPTION="
-RXTX is a Java library, using a native implementation (via JNI), providing serial \
-and parallel communication for the Java Development Toolkit (JDK). All deliverables \
-are under the GNU LGPL license. It is based on the specification for Sun Java \
-Communications API, though while many of the class descriptions are the same the \
-package used it not, since gnu.io is used instead. A certain amount of compatibility \
-is intended with API, though this project should be considered as a fork and \
-therefore compatible in spirit, but not in implementation."
-
+SUMMARY="A native serial library for java serial communication"
+DESCRIPTION="RXTX is a Java library, using a native implementation (via JNI), \
+providing serial and parallel communication for the Java Development Toolkit \
+(JDK). All deliverables are under the GNU LGPL license. It is based on the \
+specification for Sun Java Communications API, though while many of the class \
+descriptions are the same the package used it not, since gnu.io is used \
+instead. A certain amount of compatibility is intended with API, though this \
+project should be considered as a fork and therefore compatible in spirit, \
+but not in implementation."
 HOMEPAGE="http://rxtx.qbang.org"
-COPYRIGHT="(c) 1998-2006 Keane Jarvi"
+COPYRIGHT="1998-2006 Keane Jarvi"
 LICENSE="GNU GPL v2"
-SRC_URI="git+https://github.com/arduino/RXTX#84a009c"
-REVISION="1"
-ARCHITECTURES="x86 x86_64"
-if [ $effectiveTargetArchitecture != x86_gcc2 ]; then
-	# x86_gcc2 is fine as primary target architecture as long as we're building
-	# for a different secondary architecture.
-	ARCHITECTURES="$ARCHITECTURES x86_gcc2"
-else
-	ARCHITECTURES="$ARCHITECTURES !x86_gcc2"
-fi
-SECONDARY_ARCHITECTURES="x86"
-
+REVISION="3"
+SOURCE_URI="https://github.com/arduino/RXTX/archive/84a009cbb5fe2d56f828aa1e0b1301c065ea5409.tar.gz"
+CHECKSUM_SHA256="bb3c00d489407e88f6a025930c9b218ed4261c1bcebe8e4bb7d63c95c2cae90b"
+SOURCE_DIR="RXTX-84a009cbb5fe2d56f828aa1e0b1301c065ea5409"
 PATCHES="rxtx-2.2_haiku-support.patch"
+
+ARCHITECTURES="all !x86_gcc2"
+SECONDARY_ARCHITECTURES="x86"
 
 PROVIDES="
 	rxtx$secondaryArchSuffix = $portVersion
@@ -31,23 +25,24 @@ PROVIDES="
 	"
 REQUIRES="
 	haiku$secondaryArchSuffix
-	openjdk${secondaryArchSuffix}
+	openjdk8$secondaryArchSuffix
 	"
+
 BUILD_REQUIRES="
 	haiku${secondaryArchSuffix}_devel
-	openjdk${secondaryArchSuffix}
+	openjdk8$secondaryArchSuffix
 	"
 BUILD_PREREQUIRES="
-	openjdk${secondaryArchSuffix}
+	openjdk8$secondaryArchSuffix
 	cmd:aclocal
 	cmd:autoconf
+	cmd:find
 	cmd:gcc$secondaryArchSuffix
-	cmd:ld$secondaryArchSuffix
 	cmd:javac
 	cmd:javah
+	cmd:ld$secondaryArchSuffix
 	cmd:libtoolize
 	cmd:make
-	cmd:find	
 	"
 
 BUILD()
@@ -62,10 +57,10 @@ BUILD()
 
 INSTALL()
 {
-	mkdir -p $libDir/openjdk/jre/lib/i386	
+	mkdir -p $libDir/openjdk/jre/lib/i386
 	cp i586-pc-haiku/.libs/librxtxSerial-2.2.so $libDir/openjdk/jre/lib/i386
 	cp i586-pc-haiku/.libs/librxtxSerial.so $libDir/openjdk/jre/lib/i386
 
 	mkdir -p $libDir/openjdk/jre/lib/ext
-	cp RXTXcomm.jar $libDir/openjdk/jre/lib/ext	
+	cp RXTXcomm.jar $libDir/openjdk/jre/lib/ext
 }

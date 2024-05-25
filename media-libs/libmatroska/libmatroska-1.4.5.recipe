@@ -1,0 +1,73 @@
+SUMMARY="A library to parse Matroska files"
+DESCRIPTION="libmatroska is a C++ libary to parse Matroska files."
+HOMEPAGE="https://www.matroska.org/"
+COPYRIGHT="2003-2015 Matroska"
+LICENSE="GNU LGPL v2.1"
+REVISION="2"
+SOURCE_URI="http://dl.matroska.org/downloads/libmatroska/libmatroska-$portVersion.tar.bz2"
+CHECKSUM_SHA256="79023fa46901e5562b27d93a9dd168278fa101361d7fd11a35e84e58e11557bc"
+PATCHES="libmatroska-$portVersion.patchset"
+
+ARCHITECTURES="all"
+SECONDARY_ARCHITECTURES="x86_gcc2 ?x86"
+
+libVersion="6.0.0"
+libVersionCompat="$libVersion compat >= ${libVersion%%.*}"
+
+PROVIDES="
+	libmatroska$secondaryArchSuffix = $portVersion
+	lib:libmatroska$secondaryArchSuffix = $libVersionCompat
+	"
+REQUIRES="
+	haiku${secondaryArchSuffix}
+	lib:libebml$secondaryArchSuffix
+	"
+
+PROVIDES_devel="
+	libmatroska${secondaryArchSuffix}_devel = $portVersion
+	devel:libmatroska$secondaryArchSuffix = $libVersionCompat
+	"
+REQUIRES_devel="
+	libmatroska$secondaryArchSuffix == $portVersion base
+	devel:libebml$secondaryArchSuffix
+	"
+
+BUILD_REQUIRES="
+	haiku${secondaryArchSuffix}_devel
+	devel:libebml$secondaryArchSuffix
+	"
+BUILD_PREREQUIRES="
+	cmd:aclocal
+	cmd:autoconf
+	cmd:automake
+	cmd:autoreconf
+	cmd:gcc$secondaryArchSuffix
+	cmd:ld$secondaryArchSuffix
+	cmd:pkg_config$secondaryArchSuffix
+	cmd:libtoolize$secondaryArchSuffix
+	cmd:make
+	"
+
+BUILD()
+{
+	autoreconf -f -i
+	runConfigure ./configure --disable-static
+	make $jobArgs
+}
+
+INSTALL()
+{
+	make install
+
+	prepareInstalledDevelLib libmatroska
+	fixPkgconfig
+
+	rm $developLibDir/libmatroska.la
+
+	packageEntries devel $developDir
+}
+
+TEST()
+{
+	make check
+}

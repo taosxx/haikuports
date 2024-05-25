@@ -1,0 +1,31 @@
+
+resource app_flags B_MULTIPLE_LAUNCH;
+
+resource app_version {
+	major  = @MAJOR@,
+	middle = @MIDDLE@,
+	minor  = @MINOR@,
+
+	variety = B_APPV_FINAL,
+	internal = 0,
+
+	short_info = "QMPlay2",
+	long_info = "@LONG_INFO@"
+};
+
+resource app_signature "@APP_SIGNATURE@";
+
+resource("QT:QPA_FLAGS") "Q_REF_TO_ARGV";
+
+resource file_types message {
+	"types" = "application/x-asf",
+	"types" = "audio",
+	"types" = "video"
+};
+
+resource vector_icon {
+	$"6E63696604020006023C72AB3B7EB0BC1B2B3CF34D49AD3B495A8E0058FF05FF"
+	$"049726032D8303050104017A030404AE29594032413240325D4853550604EA28"
+	$"284F4D29582C412C4B2C370A042828312356484F4D040A020201021001158402"
+	$"040A030100000A000101000A01010200"
+};

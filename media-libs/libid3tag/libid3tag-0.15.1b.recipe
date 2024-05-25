@@ -1,20 +1,32 @@
 SUMMARY="The MAD id3tag library"
-DESCRIPTION="The MAD id3tag library"
+DESCRIPTION="libid3tag is a library for reading and writing ID3 tags, both \
+ID3v1 and the various versions of ID3v2."
 HOMEPAGE="http://www.underbit.com/products/mad/"
-SRC_URI="ftp://ftp.mars.org/pub/mpeg/libid3tag-$portVersion.tar.gz"
+COPYRIGHT="2000-2004 Underbit Technologies, Inc."
+LICENSE="GNU GPL v2"
+REVISION="7"
+SOURCE_URI="ftp://ftp.mars.org/pub/mpeg/libid3tag-$portVersion.tar.gz"
 CHECKSUM_SHA256="63da4f6e7997278f8a3fef4c6a372d342f705051d1eeb6a46a86b03610e26151"
-REVISION="1"
-ARCHITECTURES="x86_gcc2 ?x86 ?x86_64"
+PATCHES="libid3tag-$portVersion.patchset"
+
+ARCHITECTURES="all"
 SECONDARY_ARCHITECTURES="x86_gcc2 x86"
 
 PROVIDES="
 	libid3tag$secondaryArchSuffix = $portVersion
-	lib:libid3tag$secondaryArchSuffix = 0.3.0 compat = 0
-"
-
+	lib:libid3tag$secondaryArchSuffix = 0.3.0 compat >= 0
+	"
 REQUIRES="
 	haiku$secondaryArchSuffix
 	lib:libz$secondaryArchSuffix
+	"
+
+PROVIDES_devel="
+	libid3tag${secondaryArchSuffix}_devel = $portVersion
+	devel:libid3tag$secondaryArchSuffix = 0.3.0 compat >= 0
+	"
+REQUIRES_devel="
+	$portName == $portVersion base
 	"
 
 BUILD_REQUIRES="
@@ -22,43 +34,36 @@ BUILD_REQUIRES="
 	devel:libz$secondaryArchSuffix
 	"
 BUILD_PREREQUIRES="
-	cmd:libtoolize
+	cmd:aclocal_1.13
 	cmd:autoconf
-	cmd:make
 	cmd:gcc$secondaryArchSuffix
+	cmd:gperf >= 3.1
+	cmd:libtoolize$secondaryArchSuffix
+	cmd:make
 	"
 
-PATCHES="libid3tag-$portVersion.patchset"
 BUILD()
 {
-	libtoolize --force --copy --install
-	aclocal
-	autoconf
-	runConfigure ./configure
+	touch AUTHORS ChangeLog NEWS
+	autoreconf -vfi
+	runConfigure ./configure --disable-static
 	make
 }
 
 INSTALL()
 {
 	make install
+
+	rm $libDir/libid3tag.la
+
 	prepareInstalledDevelLib libid3tag
-	packageEntries devel $developDir
+	fixPkgconfig
+
+	packageEntries devel \
+		$developDir
 }
 
 TEST()
 {
-	make test
 	make check
 }
-
-LICENSE="GNU GPL v2"
-COPYRIGHT="2000-2004 Underbit Technologies, Inc."
-
-PROVIDES_devel="
-	libid3tag${secondaryArchSuffix}_devel = $portVersion
-	devel:libid3tag$secondaryArchSuffix
-"
-
-REQUIRES_devel="
-	$portName == $portVersion base
-"

@@ -1,0 +1,48 @@
+From 2b5a6ba794b71da4de049f3ed1b0804a3bbeee8a Mon Sep 17 00:00:00 2001
+From: begasus <begasus@gmail.com>
+Date: Sun, 6 May 2018 09:01:34 +0200
+Subject: Don't use -Werror
+
+
+diff --git a/src/Makefile.am b/src/Makefile.am
+index ce13a23..a149993 100644
+--- a/src/Makefile.am
++++ b/src/Makefile.am
+@@ -7,7 +7,7 @@
+ # See the COPYING file for license conditions.
+ #
+ 
+-AM_CFLAGS = -pedantic -Wall -Werror @THREAD_FLAGS@
++AM_CFLAGS = -pedantic -Wall @THREAD_FLAGS@
+ if WIN32
+ AM_CFLAGS += -Wno-error=format
+ endif
+diff --git a/src/posix/Makefile.am b/src/posix/Makefile.am
+index 82c70ab..9b436f5 100644
+--- a/src/posix/Makefile.am
++++ b/src/posix/Makefile.am
+@@ -8,7 +8,7 @@
+ #
+ 
+ if !WIN32
+-AM_CFLAGS = -pedantic -Wall -Werror @THREAD_FLAGS@
++AM_CFLAGS = -pedantic -Wall @THREAD_FLAGS@
+ AM_LDFLAGS = -no-undefined -version-info @LT_CURRENT@:@LT_REVISION@:@LT_AGE@ \
+ 	     @THREAD_FLAGS@
+ AM_CPPFLAGS = -I$(top_srcdir)/include -I$(top_srcdir)/src
+diff --git a/src/posix/Makefile.in b/src/posix/Makefile.in
+index ae2c053..d9abcf7 100644
+--- a/src/posix/Makefile.in
++++ b/src/posix/Makefile.in
+@@ -295,7 +295,7 @@ target_alias = @target_alias@
+ top_build_prefix = @top_build_prefix@
+ top_builddir = @top_builddir@
+ top_srcdir = @top_srcdir@
+-@WIN32_FALSE@AM_CFLAGS = -pedantic -Wall -Werror @THREAD_FLAGS@
++@WIN32_FALSE@AM_CFLAGS = -pedantic -Wall @THREAD_FLAGS@
+ @WIN32_FALSE@AM_LDFLAGS = -no-undefined -version-info @LT_CURRENT@:@LT_REVISION@:@LT_AGE@ \
+ @WIN32_FALSE@	     @THREAD_FLAGS@
+ 
+-- 
+2.37.3
+

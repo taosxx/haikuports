@@ -1,21 +1,22 @@
-SUMMARY="Truncates files of any kind."
-DESCRIPTION="
-FileCropper is a GUI app which truncates files of any kind. It Cuts off \
-everything from a given offset (bytes) to the end of the file.
-"
+SUMMARY="A tool to truncate files of any kind"
+DESCRIPTION="FileCropper is a GUI app which truncates files of any kind. It \
+cuts off everything from a given offset (bytes) to the end of the file."
+HOMEPAGE="https://github.com/HaikuArchives/FileCropper"
 COPYRIGHT="2002 Maurice Michalski"
 LICENSE="MIT"
-HOMEPAGE="https://github.com/HaikuArchives/FileCropper"
-SRC_URI="git://github.com/HaikuArchives/FileCropper.git#0dde0f752a"
-REVISION="2"
+REVISION="3"
+srcGitRev="6660b2b1da50428aeebbb8c3b19ac4fd06adcf2c"
+SOURCE_URI="https://github.com/HaikuArchives/FileCropper/archive/$srcGitRev.tar.gz"
+CHECKSUM_SHA256="24c2faddea0b9b48651c0ab55841b6cffe186c65f9157e77047b9a79b760ce0d"
+SOURCE_FILENAME="filecropper-$portVersion-$srcGitRev.tar.gz"
+SOURCE_DIR="FileCropper-$srcGitRev"
 
-ARCHITECTURES="x86_gcc2 x86 ?x86_64"
+ARCHITECTURES="all"
 
 PROVIDES="
 	filecropper = $portVersion
 	app:FileCropper = $portVersion
 	"
-
 REQUIRES="
 	haiku
 	"
@@ -23,9 +24,8 @@ REQUIRES="
 BUILD_REQUIRES="
 	haiku_devel
 	"
-
 BUILD_PREREQUIRES="
-	cmd:gcc
+	cmd:g++
 	cmd:xres
 	"
 

@@ -1,53 +1,44 @@
-DESCRIPTION="
-Torrentor is a torrent client for the Haiku operating system. \
-BitTorrent protocol is created for relieving servers and speed up \
-downloading files. Users are not downloading data directly from \
-server, but they are sending to and receiving it from themselves.
-"
-SUMMARY="Torrentor is a torrent client for the haiku operating system."
+SUMMARY="A torrent client"
+DESCRIPTION="Torrentor is a torrent client. The BitTorrent protocol was \
+created to relieve servers and speed up downloading files. Users are not \
+downloading data from servers, but they are sending and receiving directly \
+to/from each other."
 HOMEPAGE="https://github.com/HaikuArchives/Torrentor"
-SRC_URI="git+https://github.com/HaikuArchives/Torrentor.git#a04c10fba39c8ba39ffb8ef16c5e67d217231ac6"
 COPYRIGHT="2012 Guido Pola"
 LICENSE="MIT"
-REVISION="2"
-ARCHITECTURES="x86 ?x86_64"
-if [ $effectiveTargetArchitecture != x86_gcc2 ]; then
-	# x86_gcc2 is fine as primary target architecture as long as we're building
-	# for a different secondary architecture.
-	ARCHITECTURES="$ARCHITECTURES x86_gcc2"
-else
-	ARCHITECTURES="$ARCHITECTURES !x86_gcc2"
-fi
-SECONDARY_ARCHITECTURES="x86"
+REVISION="5"
+srcGitRev="21784a23d210bca3d78e4fa3bed846a7bc962d39"
+SOURCE_URI="https://github.com/HaikuArchives/Torrentor/archive/$srcGitRev.tar.gz"
+CHECKSUM_SHA256="08e47eefe98e08360f63262548b43ea39995e2ca6514a7178ea9cc7afd7cdf8f"
+SOURCE_DIR="Torrentor-$srcGitRev"
+
+ARCHITECTURES="!all !x86_gcc2"
+SECONDARY_ARCHITECTURES="!x86"
 
 PROVIDES="
 	torrentor${secondaryArchSuffix} = $portVersion
 	app:Torrentor = $portVersion
 	"
-
 REQUIRES="
 	haiku${secondaryArchSuffix}
-	lib:libssl${secondaryArchSuffix}
 	lib:libcurl${secondaryArchSuffix}
 	lib:libevent${secondaryArchSuffix}
+	lib:libssl${secondaryArchSuffix}
 	lib:libz${secondaryArchSuffix}
 	"
-	
+
 BUILD_REQUIRES="
 	haiku${secondaryArchSuffix}_devel
+	devel:libcurl${secondaryArchSuffix}
 	devel:libevent${secondaryArchSuffix}
 	devel:libssl${secondaryArchSuffix}
-	devel:libcurl${secondaryArchSuffix}
 	devel:libz${secondaryArchSuffix}
 	"
-	
 BUILD_PREREQUIRES="
-	makefile_engine
 	curl${secondaryArchSuffix}
-	cmd:jam
 	cmd:gcc${secondaryArchSuffix}
+	cmd:jam
 	cmd:make
-	cmd:mkdepend
 	"
 
 BUILD()
@@ -56,9 +47,9 @@ BUILD()
 	jam $jobArgs
 }
 
-INSTALL() # just trying compile, code below doesn't have to work well
+INSTALL()
 {
-	mkdir -p $appsDir/Torrentor
-	cp build/Release/Torrentor $appsDir/Torrentor/
-	addAppDeskbarSymlink $appsDir/Torrentor/Torrentor
+	mkdir -p $appsDir
+	cp build/Release/Torrentor $appsDir
+	addAppDeskbarSymlink $appsDir/Torrentor
 }

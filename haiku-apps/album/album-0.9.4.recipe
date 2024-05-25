@@ -1,38 +1,45 @@
 SUMMARY="An image viewer/organiser designed for BeOS-compatible systems"
-DESCRIPTION="Album is a file browsing and tagging utility for BeOS/Haiku.\
+DESCRIPTION="Album is a file browsing and tagging utility for BeOS/Haiku. \
 The idea is to have a work pad for pictures from different locations so they \
-may be viewed and tagged.
+may be viewed and tagged. \
 The program is not limited to pictures and BFS (Be File System) volumes, \
 although that makes most sense since some of the functionality has to do with \
 file attributes."
-HOMEPAGE="http://users.volja.net/mkovac1/proj/album/"
-SRC_URI="git+https://github.com/HaikuArchives/Album#3acc81e"
-LICENSE="MIT"
+# Original homepage http://users.volja.net/mkovac1/proj/album/
+HOMEPAGE="https://github.com/HaikuArchives/Album/"
 COPYRIGHT="2006-2015 by Matjaž Kovač"
-REVISION="1"
-ARCHITECTURES="x86_gcc2 x86 ?x86_64"
+LICENSE="MIT"
+REVISION="7"
+srcGitRev="6055c517faa827f126c6e6abdc55c1dc2d7f4f88"
+SOURCE_URI="https://github.com/HaikuArchives/Album/archive/$srcGitRev.tar.gz"
+CHECKSUM_SHA256="2e55f2236b58031433b71b074ae7aeab02f05ed413fb47656010dc93dd36d51f"
+SOURCE_DIR="Album-$srcGitRev"
+
+ARCHITECTURES="all ?x86"
+
+USER_SETTINGS_FILES="
+	settings/Album_settings
+	"
 
 PROVIDES="
-	Album = $portVersion
+	album = $portVersion
 	app:Album = $portVersion
 	"
 REQUIRES="
 	haiku
-	lib:libiptcdata$secondaryArchSuffix
+	lib:libintl
+	lib:libiptcdata
 	"
+
 BUILD_REQUIRES="
 	haiku_devel
-	devel:libiptcdata$secondaryArchSuffix
+	devel:libintl
+	devel:libiptcdata
 	"
 BUILD_PREREQUIRES="
 	makefile_engine
 	cmd:gcc
 	cmd:make
-	cmd:mkdepend
-	"
-
-USER_SETTINGS_FILES="
-	settings/Album_settings
 	"
 
 BUILD()

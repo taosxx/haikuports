@@ -1,0 +1,44 @@
+SUMMARY="CD Burning App for Haiku"
+DESCRIPTION="Cdrecord GUI frontend."
+HOMEPAGE="https://github.com/HaikuArchives/Helios"
+COPYRIGHT="2000-2004 Maurice Michalski"
+LICENSE="MIT"
+REVISION="4"
+srcGitRev="dbf19431cf71ad4b54c28eb4509185541918ee35"
+SOURCE_URI="https://github.com/HaikuArchives/Helios/archive/$srcGitRev.tar.gz"
+CHECKSUM_SHA256="25070a2350978ce1cf3f06a3322e0c627617ae0033441feb1790033c7c917a0e"
+SOURCE_FILENAME="Helios-$portVersion.tar.gz"
+SOURCE_DIR="Helios-$srcGitRev"
+
+ARCHITECTURES="?all"
+
+PROVIDES="
+	helios = $portVersion
+	app:Helios = $portVersion
+	"
+REQUIRES="
+	haiku
+	cmd:cdrecord
+	"
+
+BUILD_REQUIRES="
+	haiku_devel
+	"
+BUILD_PREREQUIRES="
+	makefile_engine
+	cmd:g++
+	cmd:make
+	"
+
+BUILD()
+{
+	make $jobArgs OBJ_DIR=objects
+}
+
+INSTALL()
+{
+	mkdir -p $appsDir/Helios
+	cp objects/Helios $appsDir/Helios
+	cp -r Language $appsDir/Helios
+	addAppDeskbarSymlink $appsDir/Helios
+}

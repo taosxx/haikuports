@@ -1,9 +1,8 @@
 SUMMARY="Find treasure and escape back to save the Goon Docks from demolition"
-DESCRIPTION="
-The action takes place in the sleepy seaside town of Cauldron Point - down in \
-an area known as the Goon Docks. The Goonies are a group of local kids - Mikey, \
-Brand, Mouth, Chunk and Data. One day they find an old treasure map in Mikey's \
-attic.
+DESCRIPTION="The action takes place in the sleepy seaside town of Cauldron \
+Point - down in an area known as the Goon Docks. The Goonies are a group of \
+local kids - Mikey, Brand, Mouth, Chunk and Data. One day they find an old \
+treasure map in Mikey's attic.
 Data figures that this must be the fabulous hidden treasure of the \
 notorious local pirate, One-Eyed Willy.
 The girls, Andy and Stef, join the other Goonies and the adventure begins. But \
@@ -12,52 +11,44 @@ the Fratelli Gang, and the Goonies are soon trapped! The Goonies have a \
 powerful ally on their side, however, in the form of the huge and amiable Sloth.
 
 When you play this game, you are Sloth! Can you help the Goonies find the \
-treasure and escape back to save the Goon Docks from demolition?
-"
+treasure and escape back to save the Goon Docks from demolition?"
 HOMEPAGE="http://www2.braingames.getput.com/goonies/"
-LICENSE="GNU GPL v2"
 COPYRIGHT="2006-2009 Brain Games"
-SRC_URI="http://braingames.jorito.net/goonies/downloads/goonies.src_1.4.1528.tgz"
-CHECKSUM_SHA256="9e9c1e67a41dfae512e975b6931828cdc82f07397921ca0a41a81c3020a73799"
-REVISION="2"
-ARCHITECTURES="x86"
-if [ $effectiveTargetArchitecture != x86_gcc2 ]; then
-	# x86_gcc2 is fine as primary target architecture as long as we're building
-	# for a different secondary architecture.
-	ARCHITECTURES="$ARCHITECTURES x86_gcc2"
-fi
+LICENSE="GNU GPL v2"
+REVISION="4"
+SOURCE_URI="http://braingames.jorito.net/goonies/downloads/goonies.src_1.4.1528.tgz"
+CHECKSUM_SHA256="09e4a022ea4c31fe0f01393ba82ffaf44dbfbf0edcc2da9f569d9fe061382ce6"
+PATCHES="goonies-$portVersion.patchset"
+
+ARCHITECTURES="all !x86_gcc2"
 SECONDARY_ARCHITECTURES="x86"
 
 PROVIDES="
 	goonies$secondaryArchSuffix = $portVersion
-	app:goonies
+	app:Goonies
 	"
 REQUIRES="
 	haiku$secondaryArchSuffix
-	lib:libsdl$secondaryArchSuffix
-	lib:libSDL_image$secondaryArchSuffix
-	lib:libSDL_mixer$secondaryArchSuffix
-#	lib:libSDL_sound$secondaryArchSuffix
-#	lib:libSDL_ttf$secondaryArchSuffix
+	lib:libGL$secondaryArchSuffix
 	lib:libGLU$secondaryArchSuffix
+	lib:libSDL_1.2$secondaryArchSuffix
+	lib:libSDL_image_1.2$secondaryArchSuffix
+	lib:libSDL_mixer_1.2$secondaryArchSuffix
 	"
+
 BUILD_REQUIRES="
-	devel:libsdl$secondaryArchSuffix
-	devel:libsdl_image$secondaryArchSuffix
-	devel:libsdl_mixer$secondaryArchSuffix
-#	devel:libsdl_sound$secondaryArchSuffix
-#	devel:libsdl_ttf$secondaryArchSuffix
-	devel:libglu$secondaryArchSuffix
+	haiku${secondaryArchSuffix}_devel
+	devel:libGL$secondaryArchSuffix
+	devel:libGLU$secondaryArchSuffix
+	devel:libSDL$secondaryArchSuffix
+	devel:libSDL_image$secondaryArchSuffix
+	devel:libSDL_mixer$secondaryArchSuffix
 	"
 BUILD_PREREQUIRES="
-	haiku${secondaryArchSuffix}_devel
-	haiku_devel
 	cmd:gcc$secondaryArchSuffix
 	cmd:ld$secondaryArchSuffix
 	cmd:make
 	"
-
-PATCHES="goonies-$portVersion.patchset"
 
 BUILD()
 {
@@ -66,12 +57,13 @@ BUILD()
 
 INSTALL()
 {
-	installDir=$appsDir/"Goonies"
-	mkdir -p "$installDir"
-	make install PREFIX="$installDir" GAMEDIR="$installDir"
 
-#	cd "$installDir"
-#	echo -e "#!/bin/sh\n`cat roadfighter`" > roadfighter
+	make install PREFIX=$appsDir/Goonies GAMEDIR=$appsDir/Goonies
 
-	addAppDeskbarSymlink "$installDir/goonies" "Goonies"
+	rm $appsDir/Goonies/goonies
+	mv $appsDir/Goonies/share/games/goonies/* $appsDir/Goonies
+	mv $appsDir/Goonies/goonies $appsDir/Goonies/Goonies
+	rm -rf $appsDir/Goonies/share
+
+	addAppDeskbarSymlink $appsDir/Goonies/Goonies
 }

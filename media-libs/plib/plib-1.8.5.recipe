@@ -1,26 +1,66 @@
-DESCRIPTION="plib - A Suite of Portable Game Libraries" 
-HOMEPAGE="http://plib.sourceforge.net/" 
-SRC_URI="http://plib.sourceforge.net/dist/plib-1.8.5.tar.gz"
-CHECKSUM_MD5="47a6fbf63668c1eed631024038b2ea90"
+SUMMARY="Steve's Portable Game Libraries"
+DESCRIPTION="PLIB includes sound effects, music, a complete 3D engine, font rendering, a simple \
+Windowing library, a game scripting language, a GUI, networking, 3D math library and a collection \
+of handy utility functions. All are 100% portable across nearly all modern computing platforms. \
+What's more, it's all available on line - and completely free. Each library component is fairly \
+independent of the others - so if you want to use SDL, GTK, GLUT, or FLTK instead of PLIB's 'PW' \
+windowing library, you can."
+HOMEPAGE="http://plib.sourceforge.net/"
+COPYRIGHT="1999-2005 Steve J. Baker"
+LICENSE="GNU LGPL v2.1"
 REVISION="1"
-STATUS_HAIKU="stable"
-DEPEND=""
-        
+SOURCE_URI="http://plib.sourceforge.net/dist/plib-$portVersion.tar.gz"
+CHECKSUM_SHA256="485b22bf6fdc0da067e34ead5e26f002b76326f6371e2ae006415dea6a380a32"
+PATCHES="plib-$portVersion.patchset"
+
+ARCHITECTURES="all"
+SECONDARY_ARCHITECTURES="x86_gcc2 x86"
+
+PROVIDES="
+	plib$secondaryArchSuffix = $portVersion
+	devel:libplibfnt$secondaryArchSuffix
+	devel:libplibjs$secondaryArchSuffix
+	devel:libplibnet$secondaryArchSuffix
+	devel:libplibpsl$secondaryArchSuffix
+	devel:libplibpu$secondaryArchSuffix
+	devel:libplibpuaux$secondaryArchSuffix
+	devel:libplibpw$secondaryArchSuffix
+	devel:libplibsg$secondaryArchSuffix
+	devel:libplibsl$secondaryArchSuffix
+	devel:libplibsm$secondaryArchSuffix
+	devel:libplibssg$secondaryArchSuffix
+	devel:libplibssgaux$secondaryArchSuffix
+	devel:libplibul$secondaryArchSuffix
+	"
+
+BUILD_REQUIRES="
+	haiku${secondaryArchSuffix}_devel
+	devel:libGL$secondaryArchSuffix
+	"
+BUILD_PREREQUIRES="
+	cmd:aclocal
+	cmd:autoconf
+	cmd:awk
+	cmd:gcc$secondaryArchSuffix
+	cmd:make
+	"
+
 BUILD()
 {
-	cd plib-1.8.5
-	libtoolize --force --copy --install
+#libtoolize --force --copy --install
 	./autogen.sh
-	./configure --prefix=`finddir B_COMMON_DIRECTORY`
-	make
+	runConfigure ./configure
+	make $jobArgs
 }
 
 INSTALL()
 {
-	cd plib-1.8.5
 	make install
+	prepareInstalledDevelLibs libplibfnt libplibjs libplibnet libplibpsl libplibpu libplibpuaux \
+		libplibpw libplibsg libplibsl libplibsm libplibssg libplibssgaux libplibul
 }
 
-LICENSE="GNU LGPL v2.1"
-COPYRIGHT="1999-2005 Steve J. Baker"
-
+TEST()
+{
+	make check
+}

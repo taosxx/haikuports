@@ -1,53 +1,65 @@
 SUMMARY="Library for IPTC metadata manipulation"
-DESCRIPTION="
-libiptcdata is a library, written in C, for manipulating the International \
-Press Telecommunications Council (IPTC) metadata stored within multimedia \
-files such as images. This metadata can include captions and keywords, often \
-used by popular photo management applications. The library provides routines \
-for parsing, viewing, modifying, and saving this metadata.
-"
+DESCRIPTION="libiptcdata is a library, written in C, for manipulating the \
+International Press Telecommunications Council (IPTC) metadata stored within \
+multimedia files such as images. This metadata can include captions and \
+keywords, often used by popular photo management applications.
+The library provides routines for parsing, viewing, modifying, and saving \
+this metadata."
 HOMEPAGE="http://libiptcdata.sourceforge.net/"
-COPYRIGHT="
-	2005 David Moore
-	"
+COPYRIGHT="2005 David Moore"
 LICENSE="GNU LGPL v2.1"
-SRC_URI="http://prdownloads.sourceforge.net/libiptcdata/libiptcdata-1.0.4.tar.gz?download"
+REVISION="4"
+SOURCE_URI="http://prdownloads.sourceforge.net/libiptcdata/libiptcdata-$portVersion.tar.gz?download"
 CHECKSUM_SHA256="79f63b8ce71ee45cefd34efbb66e39a22101443f4060809b8fc29c5eebdcee0e"
-SRC_FILENAME="libiptcdata-1.0.4.tar.gz"
-REVISION="1"
-ARCHITECTURES="x86_gcc2 ?x86 ?x86_64"
+SOURCE_FILENAME="libiptcdata-$portVersion.tar.gz"
+PATCHES="libiptcdata-$portVersion.patch"
+
+ARCHITECTURES="all"
+SECONDARY_ARCHITECTURES="x86"
+
+libVersion="0.3.3"
+libVersionCompat="$libVersion compat >= 0"
 
 PROVIDES="
-	libiptcdata = $portVersion
-	cmd:iptc = $portVersion
-	lib:libiptcdata = 0.3.3
+	libiptcdata$secondaryArchSuffix = $portVersion
+	cmd:iptc$secondaryArchSuffix = $portVersion
+	lib:libiptcdata$secondaryArchSuffix = $libVersionCompat
 	"
 REQUIRES="
-	haiku
-	lib:libiconv
-	lib:libintl
+	haiku$secondaryArchSuffix
+	lib:libiconv$secondaryArchSuffix
+	lib:libintl$secondaryArchSuffix
 	"
+
+PROVIDES_devel="
+	libiptcdata${secondaryArchSuffix}_devel = $portVersion
+	devel:libiptcdata$secondaryArchSuffix = $libVersion
+	"
+REQUIRES_devel="
+	libiptcdata$secondaryArchSuffix == $portVersion base
+	"
+
 BUILD_REQUIRES="
-	haiku_devel
-	devel:libiconv
+	haiku${secondaryArchSuffix}_devel
+	devel:libiconv$secondaryArchSuffix
 	"
 BUILD_PREREQUIRES="
-	cmd:gcc
-	cmd:ld
+	cmd:aclocal
+	cmd:autoconf
+	cmd:autopoint
+	cmd:gcc$secondaryArchSuffix
+	cmd:ld$secondaryArchSuffix
+	cmd:libtoolize$secondaryArchSuffix
 	cmd:make
-	cmd:libtool
-	cmd:autoconf 
-	cmd:automake
 	"
-PATCHES="libiptcdata-1.0.4.patch"
+
+defineDebugInfoPackage libiptcdata$secondaryArchSuffix \
+	$libDir/libiptcdata.so.$libVersion
 
 BUILD()
 {
-	libtoolize --force --copy --install
-	aclocal -I m4
-	autoconf
-	automake
-	runConfigure ./configure --disable-gtk-doc --enable-static --enable-shared
+	autoreconf -vfi
+	runConfigure ./configure --enable-shared
 	make $jobArgs
 }
 
@@ -55,20 +67,13 @@ INSTALL()
 {
 	make install
 
-	prepareInstalledDevelLibs libiptcdata
+	# remove libtool file
+	rm -r $libDir/*.la
+
+	prepareInstalledDevelLib libiptcdata
 	fixPkgconfig
 
 	# devel package
 	packageEntries devel \
 		$developDir
 }
-
-# ----- devel package -------------------------------------------------------
-
-PROVIDES_devel="
-	libiptcdata_devel = $portVersion
-	devel:libiptcdata = 0.3.3
-	"
-REQUIRES_devel="
-	libiptcdata == $portVersion base
-	"

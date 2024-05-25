@@ -1,49 +1,59 @@
 SUMMARY="Speech synthesizer for English and other languages"
-DESCRIPTION="
-	eSpeak is a compact open source software speech synthesizer \
-	for English and other languages, for Linux and Windows.
-	
-	eSpeak uses a \"formant synthesis\" method. \
-	This allows many languages to be provided in a small size. \
-	The speech is clear, and can be used at high speeds, \
-	but is not as natural or smooth as larger synthesizers \
-	which are based on human speech recordings.
-	"
+DESCRIPTION="eSpeak is a compact open source software speech synthesizer \
+for English and other languages, for Linux and Windows. \
+\
+eSpeak uses a \"formant synthesis\" method. \
+This allows many languages to be provided in a small size. \
+The speech is clear, and can be used at high speeds, \
+but is not as natural or smooth as larger synthesizers \
+which are based on human speech recordings."
 HOMEPAGE="http://espeak.sourceforge.net/"
-SRC_URI="http://sourceforge.net/projects/espeak/files/espeak/espeak-1.48/espeak-1.48.04-source.zip"
-CHECKSUM_SHA256="bf9a17673adffcc28ff7ea18764f06136547e97bbd9edf2ec612f09b207f0659"
-REVISION="1"
-LICENSE="GNU GPL v3"
 COPYRIGHT="2005-2014 Jonathan Duddington"
+LICENSE="GNU GPL v3"
+REVISION="7"
+SOURCE_URI="http://sourceforge.net/projects/espeak/files/espeak/espeak-1.48/espeak-${portVersion}-source.zip"
+CHECKSUM_SHA256="bf9a17673adffcc28ff7ea18764f06136547e97bbd9edf2ec612f09b207f0659"
+SOURCE_DIR="espeak-${portVersion}-source"
+PATCHES="espeak-${portVersion}.patchset"
 
-ARCHITECTURES="x86_gcc2 ?x86 ?x86_64"
+ARCHITECTURES="all"
 
 PROVIDES="
 	espeak = $portVersion
 	cmd:espeak = $portVersion
-	lib:libespeak = 1.1.4
-	devel:libespeak = 1.1.4
+	devel:libespeak = 1.1.48 compat >= 1
+	lib:libespeak = 1.1.48 compat >= 1
 	"
 REQUIRES="
 	haiku
+	lib:libportaudio
 	"
+
 BUILD_REQUIRES="
 	haiku_devel
+	devel:libportaudio
 	"
 BUILD_PREREQUIRES="
-	cmd:make
 	cmd:gcc
+	cmd:make
 	"
-
-SOURCE_DIR="espeak-${portVersion}-source"
-
-PATCHES="espeak-1.48.04.patch"
 
 BUILD()
 {
 	cd src
-	make LIB_STDCPP=-lstdc++.r4 \
-		AUDIO=wave LIB_PTHREAD= \
+
+	CFLAGS=-Wno-narrowing
+	STDCPPLIBS=-lstdc++
+	if [ "$targetArchitecture" = x86_gcc2 ]; then
+		STDCPPLIBS=-lstdc++.r4
+		CFLAGS=
+	fi
+
+	cp -f portaudio19.h portaudio.h
+
+	make LIB_STDCPP=$STDCPPLIBS \
+		CXXFLAGS=$CFLAGS \
+		AUDIO=portaudio LIB_PTHREAD= \
 		VISIBILITY_FLAG= \
 		PREFIX=$prefix \
 		DATADIR=$dataDir/espeak-data \
@@ -53,12 +63,17 @@ BUILD()
 INSTALL()
 {
 	cd src
-	make LIB_STDCPP=-lstdc++.r4 \
-		AUDIO=wave LIB_PTHREAD= \
+	make LIB_STDCPP=$STDCPPLIBS \
+		CXXFLAGS=$CFLAGS \
+		AUDIO=portaudio LIB_PTHREAD= \
 		VISIBILITY_FLAG= \
 		PREFIX=$prefix \
 		DATADIR=$dataDir/espeak-data \
 		INCDIR=$includeDir/espeak \
 		install
+
+	# remove static library
+	rm $libDir/libespeak.a
+
 	prepareInstalledDevelLibs libespeak
 }

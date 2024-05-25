@@ -1,18 +1,19 @@
-SUMMARY="Fully functunal 64bit calculator"
-DESCRIPTION="
-BDH Calc is a fully functional 64bit calculator, supporting common arithmetic \
-operations like adding, subtracting, dividing and multiplying as well as \
-bitwise operators. You can choose the word size and whether the sign is \
-considered to simulate any integral data type. Moreover the calculator \
-supports binary, decimal and hexadecimal conversion.
-"
-HOMEPAGE="http://github.com/ThomasCompix/BDH-Calc"
-SRC_URI="git://github.com/ThomasCompix/BDH-Calc.git#4a6865932ae0e95244ed0149b6e8c4f437ea742a"
-REVISION="1"
-LICENSE="Undetermined"
+SUMMARY="Fully functional 64bit calculator"
+DESCRIPTION="BDH Calc is a fully functional 64bit calculator, supporting \
+common arithmetic operations like adding, subtracting, dividing and \
+multiplying as well as bitwise operators. You can choose the word size and \
+whether the sign is considered to simulate any integral data type. Moreover \
+the calculator supports binary, decimal and hexadecimal conversion."
+HOMEPAGE="https://github.com/HaikuArchives/BDH-Calc"
 COPYRIGHT="1999 Scott Hammond"
+LICENSE="Zlib"
+REVISION="3"
+srcGitRev="92df9d48db9e1e684e9d28405e7a05f05e6671aa"
+SOURCE_URI="https://github.com/HaikuArchives/BDH-Calc/archive/$srcGitRev.tar.gz"
+CHECKSUM_SHA256="1668d4f0b09dd0e929dfeba2c4413e1f17490ccbbbff2ac83cbcb44617be0343"
+SOURCE_DIR="BDH-Calc-$srcGitRev"
 
-ARCHITECTURES="x86 x86_gcc2 !ppc"
+ARCHITECTURES="all"
 
 PROVIDES="
 	bdhcalc = $portVersion
@@ -25,23 +26,20 @@ REQUIRES="
 BUILD_REQUIRES="
 	haiku_devel
 	"
-
 BUILD_PREREQUIRES="
-	cmd:gcc
+	makefile_engine
+	cmd:g++
+	cmd:make
 	"
 
 BUILD()
 {
-	g++ -c src/bdh_main.cpp -o bdh_main.o
-	g++ -c src/bdh_view.cpp -o bdh_view.o
-	g++ -lbe bdh_main.o bdh_view.o -o bdhcalc
-	xres -o bdhcalc Ressources/bdh.rsrc
-	mimeset -f bdhcalc
+	make $jobArgs OBJ_DIR=objects
 }
 
 INSTALL()
 {
 	mkdir -p $appsDir
-	mv bdhcalc $appsDir/bdhcalc
+	cp -a objects/bdhcalc $appsDir
 	addAppDeskbarSymlink $appsDir/bdhcalc "BDH Calc"
 }

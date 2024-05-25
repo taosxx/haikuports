@@ -1,0 +1,94 @@
+
+resource app_flags B_MULTIPLE_LAUNCH;
+
+resource app_version {
+	major  = @MAJOR@,
+	middle = @MIDDLE@,
+	minor  = @MINOR@,
+
+	variety = B_APPV_FINAL,
+	internal = 0,
+
+	short_info = "GPXSee",
+	long_info = "@LONG_INFO@"
+};
+
+resource app_signature "@APP_SIGNATURE@";
+
+resource file_types message {
+	"types" = "application/geo+json",
+	"types" = "application/gpx+xml",
+	"types" = "application/vnd.alpinequest.aqm",
+	"types" = "application/vnd.ant.fit",
+	"types" = "application/vnd.cgtk.gemf",
+	"types" = "application/vnd.esri.wld",
+	"types" = "application/vnd.fai.igc",
+	"types" = "application/vnd.garmin.gmap+xml",
+	"types" = "application/vnd.garmin.gpi",
+	"types" = "application/vnd.garmin.img",
+	"types" = "application/vnd.garmin.jnx",
+	"types" = "application/vnd.garmin.tcx+xml",
+	"types" = "application/vnd.google-earth.kml+xml",
+	"types" = "application/vnd.google-earth.kmz",
+	"types" = "application/vnd.gpxsee.map+xml",
+	"types" = "application/vnd.groundspeak.loc+xml",
+	"types" = "application/vnd.iho.s57-catalogue",
+	"types" = "application/vnd.iho.s57-data",
+	"types" = "application/vnd.mapbox.mbtiles",
+	"types" = "application/vnd.mapsforge.map",
+	"types" = "application/vnd.memory-map.qct",
+	"types" = "application/vnd.naviter.seeyou.cup",
+	"types" = "application/vnd.nmea.nmea",
+	"types" = "application/vnd.onmove.ghp",
+	"types" = "application/vnd.onmove.omd",
+	"types" = "application/vnd.orux.map+xml",
+	"types" = "application/vnd.osmdroid.sqlite",
+	"types" = "application/vnd.oziexplorer.map",
+	"types" = "application/vnd.oziexplorer.plt",
+	"types" = "application/vnd.oziexplorer.rte",
+	"types" = "application/vnd.oziexplorer.wpt",
+	"types" = "application/vnd.rmaps.sqlite",
+	"types" = "application/vnd.sigma.slf+xml",
+	"types" = "application/vnd.suunto.sml+xml",
+	"types" = "application/vnd.tomtom.itn",
+	"types" = "application/vnd.tomtom.ov2",
+	"types" = "application/vnd.trekbuddy.tba",
+	"types" = "application/vnd.twonav.rmap",
+	"types" = "application/vnd.twonav.trk",
+	"types" = "application/vnd.twonav.rte",
+	"types" = "application/vnd.twonav.wpt",
+	"types" = "application/x-tar",
+	"types" = "image/jpeg",
+	"types" = "image/tiff",
+	"types" = "image/vnd.maptech.kap",
+	"types" = "text/csv"
+};
+
+resource vector_icon {
+	$"6E6369660A04016005010200060236A1483BD75CBBD75C36A1484CE1B84867D7"
+	$"00D9D4BCFFC2B17802000602BAFB8538FA3DB8FA3DBAFB854C11514DA11400F2"
+	$"EFE6FFD1BB870200060236A1483BD75CBBD75C36A1484DA9B849A7D700D9D4BC"
+	$"FFC2B17804FFAD03FF0000020012033C58CC3C6E8FBC6E8F3C58CC4C9333C750"
+	$"A300FF0082FF81FFFF0002000602B3EA493BEC10BBEC10B3EA494B2956470668"
+	$"00FF9E9EFFFF060603D923050E0609EEAB032E523A583556405C465F4E5E4C5F"
+	$"C581CB57575553585B4F60495D463341254C2949274E060EAFFFEB0F23422440"
+	$"2342284925462B4C2F503B4E435640534659475C475C495A5253505352515B46"
+	$"5A485B4655405743533D5039433C3B363E393934362F362F35322E392E372C39"
+	$"0608EFFE234224402342284925462B4C2E4F3B4339473D43433C3B363E393934"
+	$"362F362F35322E392E372C390606BA0E3B4E2F503B443C463D44433C50394644"
+	$"454244430608FEEF3B4E435640534659475C475C495A5253505352515B465A48"
+	$"5B4655405743533D50394644454244430407BE2C333435393836323C2C45B5F9"
+	$"BFEF314A334C3D484BC195C2534B4F4F540405EE02403A3A403A403644374833"
+	$"41B9A2C114383C3D370404EE415451434C484C484841463B4440463B0804513B"
+	$"4D40554959440409FEEE024B58454FC0F053C211C511C449C2B0C324C3DE4E45"
+	$"4A41C404C06E494045403D473F453B493848304033432D3D264508042E393B44"
+	$"464452530605BA032E4F2F503B443C463D44433C3B433D433947000002044030"
+	$"C34530BC3A30304030BC3A30C3454050BC3A50C34550504050C34550BC3A0E0A"
+	$"00010020201B0A01010130201B01178300040A02010220201B0A03010320201B"
+	$"0A04010420201B0A05040506070830201B01178100040A06010930201B011781"
+	$"00040A07010A30201B01178100040A01010B20201B0A09010D023A69DF39EE05"
+	$"BA17E33A9242471701481DAE0A09010D023AC4CF30013BB8056C3A8DAD4A07BC"
+	$"48D8920A09010D023A094B3952B8B988403A2CA44ACF5A48FA7F0A09010D023A"
+	$"69DF39EE05BA17E33A92424A35C04A2ED70A09010D023AD92FBA161938E6AC39"
+	$"F5F348300E4A2F23"
+};

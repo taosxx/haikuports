@@ -7,12 +7,15 @@ using the standard two-letter language code of your target, e.g. 'fr.catkeys'. \
 Then open it with CatKeysEditor and start translating.
 When you're done, you have to recompile the app making use of the new catkeys."
 HOMEPAGE="https://github.com/puckipedia/BeLocalized"
-SRC_URI="git+https://github.com/puckipedia/BeLocalized#3fa4f550ee83a4b64c27571eb518270f9500791b"
-REVISION="1"
-LICENSE="MIT"
 COPYRIGHT="2014-2015 Puck Meerburg"
+LICENSE="MIT"
+REVISION="1"
+srcGitRev="3fa4f550ee83a4b64c27571eb518270f9500791b"
+SOURCE_URI="$HOMEPAGE/archive/$srcGitRev.tar.gz"
+CHECKSUM_SHA256="054c0394572aa7e4c485e7f018544bc2431eaf12d6d64e0a578d5061d1cf00eb"
+SOURCE_DIR="BeLocalized-$srcGitRev"
 
-ARCHITECTURES="x86_gcc2 x86 ?x86_64"
+ARCHITECTURES="?all x86_gcc2 x86"
 
 PROVIDES="
 	catkeyseditor = $portVersion
@@ -21,6 +24,7 @@ PROVIDES="
 REQUIRES="
 	haiku
 	"
+
 BUILD_REQUIRES="
 	haiku_devel
 	"

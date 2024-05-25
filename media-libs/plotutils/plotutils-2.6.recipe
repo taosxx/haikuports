@@ -1,0 +1,114 @@
+SUMMARY="Powerful C/C++ function library for exporting 2-D vector graphics"
+DESCRIPTION="A thread-safe function library for exporting two-dimensional \
+vector graphics files, and for displaying animated vector graphics under the \
+X Window System."
+HOMEPAGE="https://www.gnu.org/software/plotutils/"
+COPYRIGHT="1995, 1996, 1997, 1998, 1999, 2000, 2005, 2008, Free Software Foundation, Inc."
+LICENSE="GNU GPL v3"
+REVISION="2"
+SOURCE_URI="https://www.mirrorservice.org/sites/ftp.gnu.org/gnu/plotutils/plotutils-$portVersion.tar.gz
+	https://ftpmirror.gnu.org/plotutils/plotutils-$portVersion.tar.gz
+	http://ftp.hosteurope.de/mirror/ftp.gnu.org/gnu/plotutils/plotutils-$portVersion.tar.gz
+	https://ftp.gnu.org/pub/plotutils/plotutils-$portVersion.tar.gz"
+CHECKSUM_SHA256="4f4222820f97ca08c7ea707e4c53e5a3556af4d8f1ab51e0da6ff1627ff433ab"
+PATCHES="plotutils-$portVersion.patchset"
+
+ARCHITECTURES="all ?x86_gcc2 ?arm ?ppc"
+SECONDARY_ARCHITECTURES="?x86_gcc2 x86"
+
+commandBinDir=$binDir
+commandSuffix=$secondaryArchSuffix
+if [ "$targetArchitecture" = x86_gcc2 ]; then
+	commandSuffix=
+	commandBinDir=$prefix/bin
+fi
+
+libVersion="$portVersion"
+libVersionCompat="$libVersion compat >= ${libVersion%%.*}"
+
+PROVIDES="
+	plotutils$secondaryArchSuffix = $portVersion
+	lib:libplot$secondaryArchSuffix = $libVersionCompat
+	"
+REQUIRES="
+	haiku$secondaryArchSuffix
+	lib:libpng16$secondaryArchSuffix
+	lib:libz$secondaryArchSuffix
+	"
+
+PROVIDES_tools="
+	plotutils${secondaryArchSuffix}_tools = $portVersion
+	cmd:double$commandSuffix = $portVersion
+	cmd:graph$commandSuffix = $portVersion
+	cmd:hersheydemo$commandSuffix = $portVersion
+	cmd:ode$commandSuffix = $portVersion
+	cmd:plot$commandSuffix = $portVersion
+	cmd:plotfont$commandSuffix = $portVersion
+	cmd:spline$commandSuffix = $portVersion
+	cmd:tek2plot$commandSuffix = $portVersion
+	"
+REQUIRES_tools="
+	haiku$secondaryArchSuffix
+	lib:libplot$secondaryArchSuffix == $portVersion base
+	lib:libpng16$secondaryArchSuffix
+	lib:libz$secondaryArchSuffix
+	"
+
+PROVIDES_devel="
+	plotutils${secondaryArchSuffix}_devel = $portVersion
+	devel:libplot$secondaryArchSuffix = $libVersionCompat
+	"
+REQUIRES_devel="
+	haiku$secondaryArchSuffix
+	plotutils$secondaryArchSuffix == $portVersion base
+	"
+
+BUILD_REQUIRES="
+	haiku${secondaryArchSuffix}_devel
+	devel:libpng16$secondaryArchSuffix
+	devel:libz$secondaryArchSuffix
+	"
+BUILD_PREREQUIRES="
+	cmd:aclocal
+	cmd:autoconf
+	cmd:automake
+	cmd:awk
+	cmd:gcc$secondaryArchSuffix
+	cmd:ld$secondaryArchSuffix
+	cmd:libtoolize$secondaryArchSuffix
+	cmd:make
+	"
+
+BUILD()
+{
+	libtoolize --force --copy --install
+	autoreconf -i
+	runConfigure --omit-dirs binDir ./configure \
+			--bindir=$commandBinDir \
+			--disable-static
+	make $jobArgs
+}
+
+INSTALL()
+{
+	make install
+
+	rm $libDir/libplot*.la
+
+	prepareInstalledDevelLib libplot
+	fixPkgconfig
+
+	# tools package
+	packageEntries tools $commandBinDir \
+		$dataDir \
+		$documentationDir
+
+	# devel package
+	packageEntries devel \
+		$developDir
+}
+
+TEST()
+{
+	make check
+}

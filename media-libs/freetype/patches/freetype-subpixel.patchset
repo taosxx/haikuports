@@ -1,0 +1,22 @@
+From fd9b7dd32ca353efef65a47e508dd48149cfb278 Mon Sep 17 00:00:00 2001
+From: Humdinger <humdingerb@gmail.com>
+Date: Thu, 2 Feb 2017 08:50:24 +0100
+Subject: Enable subpixel rendering
+
+
+diff --git a/include/freetype/config/ftoption.h b/include/freetype/config/ftoption.h
+index 90c123e..67a361d 100644
+--- a/include/freetype/config/ftoption.h
++++ b/include/freetype/config/ftoption.h
+@@ -124,7 +124,7 @@ FT_BEGIN_HEADER
+    * When this macro is not defined, FreeType offers alternative LCD
+    * rendering technology that produces excellent output.
+    */
+-/* #define FT_CONFIG_OPTION_SUBPIXEL_RENDERING */
++#define FT_CONFIG_OPTION_SUBPIXEL_RENDERING
+ 
+ 
+   /**************************************************************************
+-- 
+2.7.0
+

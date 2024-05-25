@@ -1,0 +1,90 @@
+SUMMARY="A full-featured cross-platform image library"
+DESCRIPTION="
+Developer's Image Library (DevIL) is a programmer's library to develop \
+applications with very powerful image loading capabilities, yet is easy for a \
+developer to learn and use. Ultimate control of images is left to the \
+developer, so unnecessary conversions, etc. are not performed. DevIL utilizes \
+a simple, yet powerful, syntax. DevIL can load, save, convert, manipulate, \
+filter and display a wide variety of image formats."
+HOMEPAGE="http://openil.sourceforge.net/"
+COPYRIGHT="2017 Denton Woods"
+LICENSE="GNU LGPL v2.1"
+REVISION="5"
+SOURCE_URI="http://sourceforge.net/projects/openil/files/DevIL/$portVersion/DevIL-$portVersion.tar.gz"
+CHECKSUM_SHA256="0075973ee7dd89f0507873e2580ac78336452d29d34a07134b208f44e2feb709"
+SOURCE_DIR="DevIL/DevIL"
+PATCHES="devil-$portVersion.patchset"
+
+ARCHITECTURES="all !x86_gcc2"
+SECONDARY_ARCHITECTURES="x86"
+
+PROVIDES="
+	devil$secondaryArchSuffix = $portVersion
+	lib:libIL$secondaryArchSuffix
+	lib:libILU$secondaryArchSuffix
+	lib:libILUT$secondaryArchSuffix
+	"
+REQUIRES="
+	haiku$secondaryArchSuffix
+	lib:libjasper$secondaryArchSuffix
+	lib:libjpeg$secondaryArchSuffix
+	lib:liblcms2$secondaryArchSuffix
+	lib:libpng16$secondaryArchSuffix
+	lib:libtiff$secondaryArchSuffix
+	lib:libz$secondaryArchSuffix
+	"
+
+PROVIDES_devel="
+	devil${secondaryArchSuffix}_devel = $portVersion
+	devel:libIL$secondaryArchSuffix
+	devel:libILU$secondaryArchSuffix
+	devel:libILUT$secondaryArchSuffix
+	"
+REQUIRES_devel="
+	devil$secondaryArchSuffix == $portVersion base
+	"
+
+BUILD_REQUIRES="
+	haiku${secondaryArchSuffix}_devel
+	devel:libgl$secondaryArchSuffix
+	devel:libjasper$secondaryArchSuffix
+	devel:libjpeg$secondaryArchSuffix
+	devel:liblcms2$secondaryArchSuffix
+	devel:libmng$secondaryArchSuffix
+	devel:libpng16$secondaryArchSuffix
+	devel:libtiff$secondaryArchSuffix
+	devel:libz$secondaryArchSuffix
+	"
+BUILD_PREREQUIRES="
+	cmd:awk
+	cmd:cmake
+	cmd:gcc$secondaryArchSuffix
+	cmd:ld$secondaryArchSuffix
+	cmd:libtoolize$secondaryArchSuffix
+	cmd:make
+	cmd:pkg_config$secondaryArchSuffix
+	"
+
+BUILD()
+{
+	cmake -Bbuild -S. -DCMAKE_BUILD_TYPE=Release \
+		$cmakeDirArgs \
+		-DCMAKE_CXX_FLAGS="-fpermissive"
+	make -C build $jobArgs
+}
+
+INSTALL()
+{
+	make -C build install
+
+	prepareInstalledDevelLibs libIL libILU libILUT
+	fixPkgconfig
+
+	packageEntries devel \
+		$developDir
+}
+
+TEST()
+{
+	make -C build check
+}

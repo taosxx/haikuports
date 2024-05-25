@@ -1,27 +1,33 @@
-SUMMARY="A filemanager for Haiku"
-DESCRIPTION="Classic Norton Commander look with modern multithreading inside."
+SUMMARY="A two-panel filemanager"
+DESCRIPTION="A classic Norton Commander look with modern multithreading \
+inside."
 HOMEPAGE="https://github.com/HaikuArchives/BeFar"
-SRC_URI="git://github.com/HaikuArchives/BeFar#2897e9658c"
 COPYRIGHT="1999-2001 Bazarov Max"
 LICENSE="Public Domain"
-REVISION="3"
+REVISION="6"
+srcGitRev="d57b8a126e45ddff0e683d4b8e0f2284cc81998c"
+SOURCE_URI="$HOMEPAGE/archive/$srcGitRev.tar.gz"
+CHECKSUM_SHA256="54c11af8b1ec066b170ed1bf823c37800965153e4054903feaba2150aa420385"
+SOURCE_DIR="BeFAR-$srcGitRev/source"
 
-ARCHITECTURES="x86_gcc2 x86 ?x86_64"
+ARCHITECTURES="all"
 
 PROVIDES="
 	befar = $portVersion
 	app:BeFAR = $portVersion
 	"
 REQUIRES="
-	haiku$secondaryArchSuffix
+	haiku
+	"
+
+BUILD_REQUIRES="
+	haiku_devel
 	"
 BUILD_PREREQUIRES="
-	haiku${secondaryArchSuffix}_devel
-	cmd:gcc$secondaryArchSuffix
-	cmd:make
 	makefile_engine
+	cmd:g++
+	cmd:make
 	"
-SOURCE_DIR="$portVersionedName/source"
 
 BUILD()
 {

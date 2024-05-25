@@ -1,0 +1,28 @@
+From 8880009f418542377f3a74b85a8124fa2037d75f Mon Sep 17 00:00:00 2001
+From: Gerasim Troeglazov <3dEyes@gmail.com>
+Date: Thu, 30 Sep 2021 21:49:13 +1000
+Subject: Set current dir
+
+
+diff --git a/aaaa/src/main/cpp/AAAA-Engine/main.c b/aaaa/src/main/cpp/AAAA-Engine/main.c
+index 81242ed..add02a9 100644
+--- a/aaaa/src/main/cpp/AAAA-Engine/main.c
++++ b/aaaa/src/main/cpp/AAAA-Engine/main.c
+@@ -2,8 +2,14 @@
+ #include "zcore.h"
+ #include "zresm.h"
+ 
++#include <unistd.h>
++
+ int main(int argc, char *argv[])
+ {
++#ifdef APPDIR
++	chdir(APPDIR);
++#endif
++
+     zresminit();
+ 
+     zcoreinit();
+-- 
+2.30.2
+
